@@ -27,7 +27,8 @@
 - 
 
 # Flujo Gitflow
-- 
+- Se ha implementado una estilo de trabajo GitFLOW tradicional en donde se nombra a la rama principal como main utilizada para 
+las versiones completas que pasarán a producción y una segunda rama "DEVELOPE" donde se contruyen todas las funcionalidades antes de pasar a producción. adicional a estas se suele utilizar ramas de "FEATURES" o "FIXES" si se llegará a requerir.
 
 # Instrucciones de Ejecucion
 - Inicio del servidor
