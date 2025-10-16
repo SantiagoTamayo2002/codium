@@ -3,3 +3,5 @@
 .vscode/
 **/virtual_back/
 **/node_modules/
+**/__pycache__/
+*.pyc
