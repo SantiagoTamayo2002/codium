@@ -24,7 +24,7 @@
 - Se utilizara la arquitectura cliente-servidor debido a un analisis previo utilizando el modelo C4
 
 # Estandares
-- 
+- .JIJI
 
 # Flujo Gitflow
 - Se ha implementado una estilo de trabajo GitFLOW tradicional en donde se nombra a la rama principal como main utilizada para 
