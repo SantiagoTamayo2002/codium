@@ -3,6 +3,9 @@ from ..models.personaModel import PersonaModel
 from mysql.connector.errors import IntegrityError 
 import re
 
+
+from werkzeug.security import check_password_hash
+
 from flask_jwt_extended import create_access_token
 
 persona_bp = Blueprint('persona_bp', __name__)
@@ -216,3 +219,37 @@ def google_auth():
             return jsonify({"error": "Error interno al procesar el registro de Google"}), 500
 #-----------------------------------------------------------------------
 
+## -----------------------------------------------------
+## RUTA LOGIN (Email/Password)
+## -----------------------------------------------------
+@persona_bp.route('/login', methods=['POST'])
+def login_person():
+    data = request.get_json()
+    if not data or not data.get('correo') or not data.get('contrasena_plana'):
+        return jsonify({"error": "Faltan campos 'correo' o 'contrasena_plana'"}), 400
+
+    correo = data['correo'].strip()
+    contrasena_plana = data['contrasena_plana']
+
+    try:
+        # 1. Usamos el método que ya tenías para obtener las credenciales
+        user_credentials = PersonaModel.get_credentials(correo)
+
+        # 2. Verificamos si el usuario existe Y la contraseña es correcta
+        if not user_credentials or not check_password_hash(user_credentials['contraseña_hash'], contrasena_plana):
+            # Es importante dar un mensaje genérico por seguridad
+            return jsonify({"error": "Credenciales inválidas"}), 401 # Unauthorized
+
+        # 3. Crear el token si las credenciales son válidas
+        # El 'identity' es el id_persona que será guardado en el token
+        access_token = create_access_token(identity=user_credentials['id_persona'])
+        
+        return jsonify({
+            "message": "Inicio de sesión exitoso",
+            "token": access_token,
+            "id_persona": user_credentials['id_persona']
+        }), 200
+
+    except Exception as e:
+        print(f"Error en /login: {e}")
+        return jsonify({"error": "Error interno del servidor"}), 500
