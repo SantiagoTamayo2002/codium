@@ -1,40 +1,92 @@
-import os
-import json
-from config import Config
+import mysql
+from ..database.db import get_db_connection
+from werkzeug.security import generate_password_hash, check_password_hash
 
-def load_users():
-    """Carga usuarios desde JSON."""
-    if not os.path.exists(Config.USERS_FILE):
-        return []
-    with open(Config.USERS_FILE, "r", encoding="utf-8") as f:
+
+class authModel:
+
+
+    #------------------------------------------------------------------------------------------------------------------
+    #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @classmethod
+    def get_person_by_email(cls, correo):
+        conn = get_db_connection()
+        if conn is None:
+            return None
+        cursor = conn.cursor(dictionary=True)
         try:
-            return json.load(f)
-        except json.JSONDecodeError:
-            return []
+            query = """
+                SELECT id_persona, nombre, apellidos, correo, nombre_usuario, 
+                       num_retos_resueltos, puntaje_total, id_rol 
+                FROM persona 
+                WHERE correo = %s AND esta_activo = TRUE
+            """
+            cursor.execute(query, (correo,))
+            person = cursor.fetchone()
+            return person
+        except Exception as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return None
+        finally:
+            cursor.close()
+            conn.close()
 
-def save_users(users):
-    """Guarda usuarios en JSON."""
-    with open(Config.USERS_FILE, "w", encoding="utf-8") as f:
-        json.dump(users, f, indent=4, ensure_ascii=False)
+ #------------------------------------------------------------------------------------------------------------------
+    #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-def register_user_if_new(user_info):
-    user_info = user_info
-    pass
-    '''
-    users = load_users()
-    email = user_info.get("email")
 
-    for u in users:
-        if u["email"] == email:
-            return False
+    @classmethod
+    def create_person(cls, 
+                          nombre, 
+                          apellidos, 
+                          correo, 
+                          contrasena_plana,
+                          nombre_usuario,
+                          token_refresco = None,
+                          id_rol = 2):
 
-    new_user = {
-        "id": str(uuid.uuid4()),
-        "name": user_info.get("name"),
-        "email": email,
-        "picture": user_info.get("picture")
-    }
-    users.append(new_user)
-    save_users(users)
-    return True
-    '''
+        conn = get_db_connection()
+        if conn is None:
+            raise Exception("No se pudo conectar a la base de datos")
+
+        cursor = conn.cursor()
+        
+        try:
+            hashed_password = generate_password_hash(contrasena_plana)
+            
+            query = """
+                INSERT INTO persona (nombre, apellidos, correo, contraseña_hash, nombre_usuario, token_refresco, id_rol)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            
+            cursor.execute(query, (nombre, apellidos, correo, hashed_password, nombre_usuario, token_refresco, id_rol))
+            
+            new_person_id = cursor.lastrowid
+            
+            conn.commit()
+            
+            
+            return {"message": "Persona creada exitosamente", "id_persona": new_person_id}, 201
+        
+        except mysql.connector.IntegrityError as e:
+            if e.errno == 1062:
+                if 'correo' in str(e):
+                    
+                    return {"error": "El correo electrónico ya está registrado."}, 409
+                elif 'nombre_usuario' in str(e):
+                    
+                    return {"error": "El nombre de usuario ya existe."}, 409
+                else:
+                    
+                    return {"error": "Un valor único ya existe."}, 409
+        
+        except Exception as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            conn.rollback() 
+            # 8. CORREGIDO: Lanzar excepción
+            raise Exception("Error interno al crear el usuario")
+        
+        finally:
+            cursor.close()
+            conn.close()
