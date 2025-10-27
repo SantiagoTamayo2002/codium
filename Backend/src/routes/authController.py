@@ -17,11 +17,6 @@ def index():
 @jwt_required()
 def profile():
     print("llego a profile")
-    # Si el token es inválido o no se provee (o es un Refresh Token), 
-    # Flask-JWT-Extended devolverá un error 401 o 422 automáticamente.
-    
-    # <<< 3. OBTENER EL ID DEL USUARIO DESDE EL TOKEN >>>
-    # Esto es el 'identity' que pasamos en create_access_token()
     current_user_id = get_jwt_identity()
 
     try:

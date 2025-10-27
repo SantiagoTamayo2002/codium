@@ -1,6 +1,5 @@
 import mysql
 from ..database.db import get_db_connection
-# from flask import jsonify  <-- 1. ELIMINADO. El modelo no debe importar jsonify.
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class PersonaModel:
@@ -14,7 +13,6 @@ class PersonaModel:
         
         cursor = conn.cursor(dictionary=True)
         try:
-            # ... (código sin cambios) ...
             offset = (page - 1) * per_page
             query = """
                 SELECT id_persona, nombre, apellidos, correo, nombre_usuario, 
@@ -38,12 +36,10 @@ class PersonaModel:
     def get_persona_by_id(cls, id_persona):
         conn = get_db_connection()
         if conn is None:
-            # 2. CORREGIDO: Lanzar excepción en lugar de jsonify
             raise Exception("Sin respuesta de la base de datos")
 
         cursor = conn.cursor(dictionary=True)
         try:
-            # ... (código sin cambios) ...
             query = """
                 SELECT id_persona, nombre, apellidos, correo, nombre_usuario, 
                        num_retos_resueltos, puntaje_total, id_rol 
@@ -76,7 +72,6 @@ class PersonaModel:
 
         conn = get_db_connection()
         if conn is None:
-            # 3. CORREGIDO: Lanzar excepción
             raise Exception("No se pudo conectar a la base de datos")
 
         cursor = conn.cursor()
@@ -95,19 +90,19 @@ class PersonaModel:
             
             conn.commit()
             
-            # 4. CORREGIDO: Devolver un diccionario
+            
             return {"message": "Persona creada exitosamente", "id_persona": new_person_id}, 201
         
         except mysql.connector.IntegrityError as e:
             if e.errno == 1062:
                 if 'correo' in str(e):
-                    # 5. CORREGIDO: Devolver un diccionario
+                    
                     return {"error": "El correo electrónico ya está registrado."}, 409
                 elif 'nombre_usuario' in str(e):
-                    # 6. CORREGIDO: Devolver un diccionario
+                    
                     return {"error": "El nombre de usuario ya existe."}, 409
                 else:
-                    # 7. CORREGIDO: Devolver un diccionario
+                    
                     return {"error": "Un valor único ya existe."}, 409
         
         except Exception as e:
