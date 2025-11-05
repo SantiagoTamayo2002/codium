@@ -128,7 +128,7 @@ class PersonaModel:
             cursor.close()
             conn.close()
 
-
+    
 
     @classmethod
     def update_person(cls, id_persona, update_data):
@@ -138,7 +138,7 @@ class PersonaModel:
 
         # --- INICIO DE CORRECCIÓN DE SEGURIDAD ---
         # Lista blanca de campos permitidos para actualización
-        allowed_fields = ['nombre', 'apellidos', 'nombre_usuario', 'token_refresco']
+        allowed_fields = ['nombre', 'apellidos', 'nombre_usuario', 'token_refresco', 'id_rol']
         
         fields_to_update = []
         values = []
@@ -235,3 +235,5 @@ class PersonaModel:
         finally:
             cursor.close()
             conn.close()
+
+
