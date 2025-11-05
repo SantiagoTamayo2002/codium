@@ -1,7 +1,7 @@
 import mysql
 from ..database.db import get_db_connection
-from flask import jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
+
+
 
 class PersonaModel:
 
@@ -14,9 +14,7 @@ class PersonaModel:
         
         cursor = conn.cursor(dictionary=True)
         try:
-
             offset = (page - 1) * per_page
-
             query = """
                 SELECT id_persona, nombre, apellidos, correo, nombre_usuario, 
                        num_retos_resueltos, puntaje_total, id_rol 
@@ -30,7 +28,6 @@ class PersonaModel:
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
             raise Exception("Error interno al consultar persona")
-
         finally:
             cursor.close()
             conn.close()
@@ -40,7 +37,7 @@ class PersonaModel:
     def get_persona_by_id(cls, id_persona):
         conn = get_db_connection()
         if conn is None:
-            return jsonify({"error": "Sin respuesta de la base de datos"}), 500
+            raise Exception("Sin respuesta de la base de datos")
 
         cursor = conn.cursor(dictionary=True)
         try:
@@ -53,18 +50,18 @@ class PersonaModel:
             cursor.execute(query, (id_persona,))
             persona = cursor.fetchone()
             if persona:
-                return persona  # Esto es un dict, la ruta Flask debe hacer el jsonify
+                return persona
             else:
-                return None # Es mejor que la ruta maneje el 404
+                return None
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
-            # Lanza una excepción para que la capa de servicio/ruta la maneje
             raise Exception("Error interno al consultar persona")
         finally:
             cursor.close()
             conn.close()
 
 
+<<<<<<< HEAD
 
     @classmethod
     def create_person(cls, 
@@ -129,17 +126,26 @@ class PersonaModel:
             conn.close()
 
     
+=======
+    
+
+>>>>>>> origin/DEVELOPE
 
     @classmethod
     def update_person(cls, id_persona, update_data):
         conn = get_db_connection()
         if conn is None:
-            return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
+            # 9. CORREGIDO: Lanzar excepción
+            raise Exception("No se pudo conectar a la base de datos")
 
+<<<<<<< HEAD
         # --- INICIO DE CORRECCIÓN DE SEGURIDAD ---
         # Lista blanca de campos permitidos para actualización
         allowed_fields = ['nombre', 'apellidos', 'nombre_usuario', 'token_refresco', 'id_rol']
         
+=======
+        allowed_fields = ['nombre', 'apellidos', 'nombre_usuario', 'token_refresco']
+>>>>>>> origin/DEVELOPE
         fields_to_update = []
         values = []
 
@@ -148,12 +154,11 @@ class PersonaModel:
                 fields_to_update.append(f"{key} = %s")
                 values.append(value)
             else:
-                # Opcional: registrar intento de actualizar campo no permitido
                 print(f"ADVERTENCIA: Intento de actualizar campo no permitido: {key}")
 
         if not fields_to_update:
-            return jsonify({"error": "No se proporcionaron datos válidos para actualizar"}), 400
-        # --- FIN DE CORRECCIÓN DE SEGURIDAD ---
+            # 10. CORREGIDO: Devolver diccionario
+            return {"error": "No se proporcionaron datos válidos para actualizar"}, 400
 
         cursor = conn.cursor()
         try:
@@ -163,72 +168,99 @@ class PersonaModel:
             cursor.execute(query, tuple(values))
             
             if cursor.rowcount == 0:
-                return jsonify({"error": "Persona no encontrada o inactiva"}), 404
+                # 11. CORREGIDO: Devolver diccionario
+                return {"error": "Persona no encontrada o inactiva"}, 404
             
             conn.commit()
-            return jsonify({"message": "Persona actualizada"}), 200
+            # 12. CORREGIDO: Devolver diccionario
+            return {"message": "Persona actualizada"}, 200
 
         except mysql.connector.IntegrityError as e:
+            # 13. CORREGIDO: Devolver diccionarios
             if e.errno == 1062:
                 if 'correo' in str(e):
-                    return jsonify({"error": "El correo electrónico ya está registrado."}), 409
+                    return {"error": "El correo electrónico ya está registrado."}, 409
                 elif 'nombre_usuario' in str(e):
-                    return jsonify({"error": "El nombre de usuario ya existe."}), 409
-            return jsonify({"error": "Conflicto de datos."}), 409
+                    return {"error": "El nombre de usuario ya existe."}, 409
+            return {"error": "Conflicto de datos."}, 409
 
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
             conn.rollback()
-            return jsonify({"error": "Error interno al actualizar sus datos"}), 500
+            # 14. CORREGIDO: Lanzar excepción
+            raise Exception("Error interno al actualizar sus datos")
         finally:
             cursor.close()
             conn.close()
-
 
 
     @classmethod
     def delete_person(cls, id_persona):
         conn = get_db_connection()
         if conn is None:
-            return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
+            # 15. CORREGIDO: Lanzar excepción
+            raise Exception("No se pudo conectar a la base de datos")
 
         cursor = conn.cursor()
         try:
-            # NO BORRAMOS, DESACTIVAMOS (Soft Delete)
             query = "UPDATE persona SET esta_activo = FALSE WHERE id_persona = %s"
             cursor.execute(query, (id_persona,))
             
             if cursor.rowcount == 0:
-                return jsonify({"error": "Persona no encontrada"}), 404
+                # 16. CORREGIDO: Devolver diccionario
+                return {"error": "Persona no encontrada"}, 404
             
             conn.commit()
-            # Mensaje actualizado
-            return jsonify({"message": "Persona desactivada"}), 200
+            # 17. CORREGIDO: Devolver diccionario
+            return {"message": "Persona desactivada"}, 200
 
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
             conn.rollback()
-            return jsonify({"error": "Error interno al desactivar la persona"}), 500
+            # 18. CORREGIDO: Lanzar excepción
+            raise Exception("Error interno al desactivar la persona")
         finally:
             cursor.close()
             conn.close()
     
-
-
-
+    
+    # --- Estos métodos ya eran correctos ---
+    
     @classmethod
     def get_credentials(cls, correo):
         conn = get_db_connection()
         if conn is None:
             return None
-
         cursor = conn.cursor(dictionary=True)
         try:
-            # Corregir los nombres de las columnas
             query = "SELECT id_persona, contraseña_hash, id_rol FROM persona WHERE correo = %s AND esta_activo = TRUE"
             cursor.execute(query, (correo,))
             user = cursor.fetchone()
-            return user # Devuelve el dict (o None si no se encontró)
+            return user
+        except Exception as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return None
+        finally:
+            cursor.close()
+            conn.close()
+
+
+    @classmethod
+    def get_person_by_email(cls, correo):
+        conn = get_db_connection()
+        if conn is None:
+            return None
+        cursor = conn.cursor(dictionary=True)
+        try:
+            query = """
+                SELECT id_persona, nombre, apellidos, correo, nombre_usuario, 
+                       num_retos_resueltos, puntaje_total, id_rol 
+                FROM persona 
+                WHERE correo = %s AND esta_activo = TRUE
+            """
+            cursor.execute(query, (correo,))
+            person = cursor.fetchone()
+            return person
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
             return None
