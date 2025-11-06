@@ -61,7 +61,6 @@ class PersonaModel:
             conn.close()
 
 
-<<<<<<< HEAD
 
     @classmethod
     def create_person(cls, 
@@ -126,10 +125,6 @@ class PersonaModel:
             conn.close()
 
     
-=======
-    
-
->>>>>>> origin/DEVELOPE
 
     @classmethod
     def update_person(cls, id_persona, update_data):
@@ -138,14 +133,10 @@ class PersonaModel:
             # 9. CORREGIDO: Lanzar excepción
             raise Exception("No se pudo conectar a la base de datos")
 
-<<<<<<< HEAD
         # --- INICIO DE CORRECCIÓN DE SEGURIDAD ---
         # Lista blanca de campos permitidos para actualización
         allowed_fields = ['nombre', 'apellidos', 'nombre_usuario', 'token_refresco', 'id_rol']
         
-=======
-        allowed_fields = ['nombre', 'apellidos', 'nombre_usuario', 'token_refresco']
->>>>>>> origin/DEVELOPE
         fields_to_update = []
         values = []
 

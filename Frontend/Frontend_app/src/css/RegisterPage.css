@@ -1,0 +1,265 @@
+/* RegisterPage.css - Estilo Profesional */
+
+.register-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.register-container {
+    width: 100%;
+    max-width: 500px;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.register-card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.register-title {
+    color: #2d3748;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.register-subtitle {
+    color: #718096;
+    font-size: 15px;
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+/* ========== FORMULARIO ========== */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    color: #2d3748;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #2d3748;
+    transition: all 0.3s ease;
+    background: #f7fafc;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input:disabled {
+    background: #edf2f7;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.form-group input::placeholder {
+    color: #a0aec0;
+}
+
+/* ========== PASSWORD INPUT ========== */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper input {
+    width: 100%;
+    padding-right: 50px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 4px 8px;
+    transition: transform 0.2s ease;
+}
+
+.toggle-password:hover {
+    transform: scale(1.1);
+}
+
+.toggle-password:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ========== BOTÓN REGISTRO ========== */
+.register-button {
+    width: 100%;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.25);
+}
+
+.register-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.35);
+}
+
+.register-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.register-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========== ALERTA DE ERROR ========== */
+.error-alert {
+    background-color: #fff5f5;
+    border-left: 4px solid #fc8181;
+    padding: 14px 16px;
+    border-radius: 8px;
+    color: #c53030;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideDown 0.3s ease-out;
+}
+
+.error-icon {
+    font-size: 18px;
+}
+
+/* ========== DIVISOR ========== */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 28px 0;
+    color: #718096;
+    font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.divider span {
+    padding: 0 16px;
+}
+
+/* ========== GOOGLE LOGIN ========== */
+.google-login-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* ========== LINK DE LOGIN ========== */
+.login-link {
+    text-align: center;
+    color: #718096;
+    font-size: 14px;
+    margin-top: 24px;
+}
+
+.login-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.login-link a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* ========== ANIMACIONES ========== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 640px) {
+    .register-card {
+        padding: 28px 24px;
+    }
+
+    .register-title {
+        font-size: 26px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .register-page {
+        padding: 16px;
+    }
+}
