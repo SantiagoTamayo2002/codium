@@ -2,4 +2,7 @@
 # Visual Studio Code
 .vscode/
 **/virtual_back/
+**/venv/
 **/node_modules/
+**/__pycache__/
+*.pyc

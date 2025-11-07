@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import RegisterForm from './components/registro.jsx';
+import ProfilePage from './pages/ProfilePage';
+import ProtectedRoute from './components/ProtectedRoute';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+// Creamos un layout simple para la navegación (opcional)
+function Layout() {
+    // Aquí podrías tener una barra de navegación, etc.
+    return (
+        <div>
+            {/* <h1>Mi Aplicación</h1> */}
+            {/* <nav>...</nav> */}
+        </div>
+    );
 }
 
-export default App
+function App() {
+    return (
+        <>
+            <Layout />
+            <Routes>
+                {/* --- RUTAS PÚBLICAS --- */}
+                {/* Ruta para registrarse (y loguearse con Google) */}
+                <Route path="/register" element={<RegisterForm />} />
+
+                {/* --- RUTAS PROTEGIDAS --- */}
+                {/* Envolvemos ProfilePage con ProtectedRoute */}
+                <Route 
+                    path="/profile" 
+                    element={
+                        <ProtectedRoute>
+                            <ProfilePage />
+                        </ProtectedRoute>
+                    } 
+                />
+
+                {/* --- REDIRECCIONES --- */}
+                {/* Redirigir la ruta raíz a /register (o /profile si ya está logueado) */}
+                <Route path="/" element={<Navigate to="/register" replace />} />
+
+                {/* Ruta 'catch-all' para páginas no encontradas */}
+                <Route path="*" element={<div>404 - Página no encontrada</div>} />
+            </Routes>
+        </>
+    );
+}
+
+export default App;
