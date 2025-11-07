@@ -1,5 +1,5 @@
 import mysql
-from ..database.db import get_db_connection
+from ...database.db import get_db_connection
 from werkzeug.security import generate_password_hash, check_password_hash
 
 

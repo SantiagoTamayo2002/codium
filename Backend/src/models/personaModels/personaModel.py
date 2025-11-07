@@ -1,5 +1,5 @@
 import mysql
-from ..database.db import get_db_connection
+from ...database.db import get_db_connection
 
 
 
@@ -190,6 +190,89 @@ class PersonaModel:
         except Exception as e:
             print(f"Error al ejecutar la consulta: {e}")
             return None
+        finally:
+            cursor.close()
+            conn.close()
+
+
+
+
+    @classmethod
+    def get_ranking(cls, page=1, per_page=10):
+        """
+        Obtiene la lista de usuarios ordenados por puntaje (ranking).
+        """
+        conn = get_db_connection()
+        if conn is None:
+            raise Exception("Sin respuesta de la base de datos")
+        
+        cursor = conn.cursor(dictionary=True)
+        try:
+            offset = (page - 1) * per_page
+            
+            # Ordenamos por puntaje (desc), luego por retos resueltos (desc),
+            # y finalmente por id (asc) para un orden consistente.
+            query = """
+                SELECT 
+                    id_persona, 
+                    nombre_usuario, 
+                    puntaje_total, 
+                    num_retos_resueltos
+                FROM PERSONA
+                WHERE esta_activo = TRUE
+                ORDER BY 
+                    puntaje_total DESC, 
+                    num_retos_resueltos DESC, 
+                    id_persona ASC
+                LIMIT %s OFFSET %s
+            """
+            cursor.execute(query, (per_page, offset))
+            ranking = cursor.fetchall()
+            return ranking
+        
+        except Exception as e:
+            print(f"Error al ejecutar consulta en get_ranking: {e}")
+            raise Exception("Error interno al consultar el ranking")
+        finally:
+            cursor.close()
+            conn.close()
+
+
+
+    # =====================================================================
+    # Simulador de Juez (Temporal)
+    # =====================================================================
+    @classmethod
+    def _developer_update_score(cls, id_persona, puntaje_adicional, retos_adicionales=1):
+        """
+        Simula que el Juez ha aceptado una respuesta, actualizando
+        directamente el puntaje y el número de retos del usuario.
+        """
+        conn = get_db_connection()
+        if conn is None:
+            raise Exception("No se pudo conectar a la base de datos")
+        
+        cursor = conn.cursor()
+        try:
+            query = """
+                UPDATE PERSONA
+                SET 
+                    puntaje_total = puntaje_total + %s,
+                    num_retos_resueltos = num_retos_resueltos + %s
+                WHERE id_persona = %s
+            """
+            cursor.execute(query, (puntaje_adicional, retos_adicionales, id_persona))
+            
+            if cursor.rowcount == 0:
+                 return {"error": "Persona no encontrada"}, 404
+                 
+            conn.commit()
+            return {"message": "Puntaje actualizado (simulación de Juez)"}, 200
+
+        except Exception as e:
+            print(f"Error al ejecutar consulta en _developer_update_score: {e}")
+            conn.rollback()
+            raise Exception("Error interno al actualizar puntaje")
         finally:
             cursor.close()
             conn.close()

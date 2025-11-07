@@ -1,0 +1,356 @@
+{
+	"info": {
+		"_postman_id": "b65a1d9f-ee80-443f-a043-1b1f0668138e",
+		"name": "Codium_app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49149347",
+		"_collection_link": "https://manuel-tamayo-4704565.postman.co/workspace/Manuel-Santiago-Tamayo-Moreno's~500a44ac-9a30-4fe8-83d8-a787e4f1a0b4/collection/49149347-b65a1d9f-ee80-443f-a043-1b1f0668138e?action=share&source=collection_link&creator=49149347"
+	},
+	"item": [
+		{
+			"name": "http://localhost:5000/api/publicaciones/1",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MjQ4NDEyNiwianRpIjoiOTE3M2Y5ODgtMWM3NS00MWY5LWIxNzQtNDZkYjM4ZWZhOTlkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIwIiwibmJmIjoxNzYyNDg0MTI2LCJjc3JmIjoiODBiZmZmNWEtNzVhOC00Y2ZmLWFlNjktMjM4M2YzMTZhNDNlIiwiZXhwIjoxNzYyNDg1MDI2fQ.DkP4Gp-dSRlHE1FfNsfF5x51dUkkv11AZwh806VXPhs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/publicaciones/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"publicaciones",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:5000/api/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n    \"correo\": \"sofi@example.com\",\r\n    \"contrasena_plana\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:5000/api/retos/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MjQ4MDE2OSwianRpIjoiOGY2NmQxYjEtZDk1MC00ZDA1LWI2ZDUtNWM2NGViN2M2MGUwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIwIiwibmJmIjoxNzYyNDgwMTY5LCJjc3JmIjoiODY2YzBmN2MtMDZhYi00OGU3LWExODMtNTVmNDBiOTg5ZGVjIiwiZXhwIjoxNzYyNDgxMDY5fQ.yPBGWxCu4TXJFiDlD46cYSAL6aWZAetZuZkb4DrK_yk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"titulo\": \"Suma de Dos Números\",\r\n    \"descripcion\": \"Escribe una función que tome dos números enteros como entrada y devuelva su suma.\",\r\n    \"nombre_dificultad\": \"Fácil\",\r\n    \"lenguajes\": [\"Python\", \"JavaScript\"],\r\n    \"limite_tiempo_segundos\": 2,\r\n    \"tests\": [\r\n        {\r\n            \"datos_entrada\": \"2\\n3\",\r\n            \"salida_esperada\": \"5\",\r\n            \"es_publico\": true\r\n        },\r\n        {\r\n            \"datos_entrada\": \"10\\n-5\",\r\n            \"salida_esperada\": \"5\",\r\n            \"es_publico\": true\r\n        },\r\n        {\r\n            \"datos_entrada\": \"1000\\n2000\",\r\n            \"salida_esperada\": \"3000\",\r\n            \"es_publico\": false\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/retos/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"retos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/api/retos/1/submit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MjQ4MDE2OSwianRpIjoiOGY2NmQxYjEtZDk1MC00ZDA1LWI2ZDUtNWM2NGViN2M2MGUwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIwIiwibmJmIjoxNzYyNDgwMTY5LCJjc3JmIjoiODY2YzBmN2MtMDZhYi00OGU3LWExODMtNTVmNDBiOTg5ZGVjIiwiZXhwIjoxNzYyNDgxMDY5fQ.yPBGWxCu4TXJFiDlD46cYSAL6aWZAetZuZkb4DrK_yk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"codigo_fuente\": \"def sumar(a, b):\\n    return a + b\",\r\n    \"id_lenguaje\": 1 \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/retos/1/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"retos",
+						"1",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/api/ranking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MjQ4MzA3OSwianRpIjoiNWU3Yjc3NjktMjQ4NS00NTJlLTk0ZDgtZTQxNWE1M2QzMzY4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIwIiwibmJmIjoxNzYyNDgzMDc5LCJjc3JmIjoiNjU5ZGE3YjItOWZmNS00MzcyLWEyYTUtY2MwMTUzZGUxOWIxIiwiZXhwIjoxNzYyNDgzOTc5fQ.XOumwnmsIH36x2Pli7qD4BeqGDZXOOtAnoiwX28ZstQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/ranking",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"ranking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/api/_dev/simular_aceptado",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MjQ4MzA3OSwianRpIjoiNWU3Yjc3NjktMjQ4NS00NTJlLTk0ZDgtZTQxNWE1M2QzMzY4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIwIiwibmJmIjoxNzYyNDgzMDc5LCJjc3JmIjoiNjU5ZGE3YjItOWZmNS00MzcyLWEyYTUtY2MwMTUzZGUxOWIxIiwiZXhwIjoxNzYyNDgzOTc5fQ.XOumwnmsIH36x2Pli7qD4BeqGDZXOOtAnoiwX28ZstQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id_persona\": 3,\r\n    \"puntaje_adicional\": 200,\r\n    \"retos_adicionales\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/_dev/simular_aceptado",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"_dev",
+						"simular_aceptado"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/api/publicaciones/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MjQ4NDEyNiwianRpIjoiOTE3M2Y5ODgtMWM3NS00MWY5LWIxNzQtNDZkYjM4ZWZhOTlkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIwIiwibmJmIjoxNzYyNDg0MTI2LCJjc3JmIjoiODBiZmZmNWEtNzVhOC00Y2ZmLWFlNjktMjM4M2YzMTZhNDNlIiwiZXhwIjoxNzYyNDg1MDI2fQ.DkP4Gp-dSRlHE1FfNsfF5x51dUkkv11AZwh806VXPhs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contenido\": \"¡Hola mundo! Esta es mi primera publicación en la plataforma.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/publicaciones/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"publicaciones",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/api/publicaciones/1/reacciones",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MjQ4NDEyNiwianRpIjoiOTE3M2Y5ODgtMWM3NS00MWY5LWIxNzQtNDZkYjM4ZWZhOTlkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIwIiwibmJmIjoxNzYyNDg0MTI2LCJjc3JmIjoiODBiZmZmNWEtNzVhOC00Y2ZmLWFlNjktMjM4M2YzMTZhNDNlIiwiZXhwIjoxNzYyNDg1MDI2fQ.DkP4Gp-dSRlHE1FfNsfF5x51dUkkv11AZwh806VXPhs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id_tipo_reaccion\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/publicaciones/1/reacciones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"publicaciones",
+						"1",
+						"reacciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/api/publicaciones/1/comentarios",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MjQ4NDEyNiwianRpIjoiOTE3M2Y5ODgtMWM3NS00MWY5LWIxNzQtNDZkYjM4ZWZhOTlkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIwIiwibmJmIjoxNzYyNDg0MTI2LCJjc3JmIjoiODBiZmZmNWEtNzVhOC00Y2ZmLWFlNjktMjM4M2YzMTZhNDNlIiwiZXhwIjoxNzYyNDg1MDI2fQ.DkP4Gp-dSRlHE1FfNsfF5x51dUkkv11AZwh806VXPhs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contenido\": \"¡Qué gran publicación! Felicidades.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/publicaciones/1/comentarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"publicaciones",
+						"1",
+						"comentarios"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

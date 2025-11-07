@@ -14,8 +14,7 @@ function ProfilePage() {
         const fetchProfile = async () => {
             if (user) {
                 try {
-                    // Hacemos la llamada a la ruta protegida del backend
-                    // api.js añadirá el token "Bearer" automáticamente
+
                     const res = await api.get('/profile'); 
                     setProfileData(res.data);
                 } catch (err) {
