@@ -61,8 +61,70 @@ class PersonaModel:
             conn.close()
 
 
-    
 
+    @classmethod
+    def create_person(cls, 
+                      nombre, 
+                      apellidos, 
+                      correo, 
+                      contrasena_plana,  # <-- Renombrado para claridad
+                      nombre_usuario,
+                      token_refresco = None,
+                      id_rol = 2):        # <-- El ID de rol 2 (Usuario) por defecto es buena idea
+
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
+
+        cursor = conn.cursor()
+        
+        try:
+            # Hashear la contraseña ANTES de la consulta
+            # Recibimos texto plano, guardamos el hash
+            hashed_password = generate_password_hash(contrasena_plana)
+            
+            # Query actualizada:
+            # - Sin id_persona
+            # - Sin num_retos_resueltos
+            # - Sin puntaje_total
+            query = """
+                INSERT INTO persona (nombre, apellidos, correo, contraseña_hash, nombre_usuario, token_refresco, id_rol)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            
+            # Tupla de valores actualizada
+            cursor.execute(query, (nombre, apellidos, correo, hashed_password, nombre_usuario, token_refresco, id_rol))
+            
+            # Obtener el ID que SÍ se generó
+            new_person_id = cursor.lastrowid
+            
+            conn.commit()
+            
+            # Retornar el ID real
+            return jsonify({"message": "Persona creada exitosamente", "id_persona": new_person_id}), 201
+        
+        except mysql.connector.IntegrityError as e:
+            # Manejar error de duplicado (para correo o nombre_usuario)
+            if e.errno == 1062:
+                # Mensaje de error más preciso
+                if 'correo' in str(e):
+                    return jsonify({"error": "El correo electrónico ya está registrado."}), 409
+                elif 'nombre_usuario' in str(e):
+                    return jsonify({"error": "El nombre de usuario ya existe."}), 409
+                else:
+                    return jsonify({"error": "Un valor único ya existe."}), 409
+        
+        except Exception as e:
+            # Captura general de otros errores
+            print(f"Error al ejecutar la consulta: {e}")
+            conn.rollback() # Revertir cambios si algo salió mal
+            return jsonify({"error": "Error interno al crear el usuario"}), 500   
+        
+        finally:
+            cursor.close()
+            conn.close()
+
+    
 
     @classmethod
     def update_person(cls, id_persona, update_data):
@@ -71,7 +133,10 @@ class PersonaModel:
             # 9. CORREGIDO: Lanzar excepción
             raise Exception("No se pudo conectar a la base de datos")
 
-        allowed_fields = ['nombre', 'apellidos', 'nombre_usuario', 'token_refresco']
+        # --- INICIO DE CORRECCIÓN DE SEGURIDAD ---
+        # Lista blanca de campos permitidos para actualización
+        allowed_fields = ['nombre', 'apellidos', 'nombre_usuario', 'token_refresco', 'id_rol']
+        
         fields_to_update = []
         values = []
 

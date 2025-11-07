@@ -1,12 +1,12 @@
-import { useState } from "react";
-// <<< 1. IMPORTAR EL INTERCEPTOR 'api' EN LUGAR DE 'axios' >>>
+import { useState, useEffect } from "react";
 import api from "../services/api"; 
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-// <<< 2. IMPORTAR EL HOOK DE AUTENTICACIÓN Y NAVEGACIÓN >>>
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+import "../css/profilePage.css";
+import pruebaImg from "../css/img/prueba.png";
 
 function RegisterForm() {
     // ... (formData, handleChange - SIN CAMBIOS) ...
@@ -76,11 +76,39 @@ function RegisterForm() {
     const handleGoogleError = () => {
         alert("Error al autenticar con Google");
     };
+const frases = [
+    "Aprende, comparte y disfruta del viaje 🚀",
+    "Explora nuevas habilidades cada día 💡",
+    "Conecta con la comunidad y crece 🌟",
+    "Codium, tu espacio para innovar ✨"
+];
 
-    return (
-        <div className="border-2 border-red-500">   
-            <div style={{ maxWidth: "400px", margin: "auto" }}>
-                <h2>Registro de Usuario</h2>
+const [frase, setFrase] = useState(frases[0]);
+
+useEffect(() => {
+    const interval = setInterval(() => {
+        const random = frases[Math.floor(Math.random() * frases.length)];
+        setFrase(random);
+    }, 4000); // Cambia cada 4 segundos
+    return () => clearInterval(interval);
+}, []);
+
+   return (
+    <div className="register-form-wrapper">
+        <div className="register-card">
+
+            {/* Lado Izquierdo */}
+            <div className="register-banner">
+                <img src={pruebaImg} alt="Codium Banner" />
+                <h1>Bienvenido a Codium</h1>
+                <p>{frase}</p>
+
+            </div>
+
+            {/* Lado Derecho */}
+            <div className="register-content">
+                <h2>Aprende con nosotros</h2>
+
                 <form onSubmit={handleSubmit}>
                     <input type="text" name="nombre" placeholder="Nombre" onChange={handleChange} required />
                     <input type="text" name="apellidos" placeholder="Apellidos" onChange={handleChange} required />
@@ -90,11 +118,14 @@ function RegisterForm() {
                     <button type="submit">Registrarse</button>
                 </form>
 
-                <hr />
-                <p>O regístrate con Google</p>
+                <div className="divider">o</div>
+
                 <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
             </div>
         </div>
-    );
+    </div>
+);
+
+
 }
 export default RegisterForm;

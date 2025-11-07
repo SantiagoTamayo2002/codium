@@ -1,0 +1,75 @@
+.table-container {
+  margin-top: 20px;
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  background: #fff;
+}
+
+.persona-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.persona-table th {
+  background-color: #3b82f6;
+  color: white;
+  padding: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.persona-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #333;
+}
+
+.persona-table tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.persona-table tr:hover {
+  background-color: #eef2ff;
+}
+
+.no-data {
+  text-align: center;
+  color: #777;
+  padding: 16px;
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-edit,
+.btn-delete {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-edit {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #059669;
+}
+
+.btn-delete {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+}
