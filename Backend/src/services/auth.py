@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from ..models.personaModel import PersonaModel 
-from ..models.authModel import authModel
+from ..models.personaModels.personaModel import PersonaModel 
+from ..models.personaModels.authModel import authModel
 from mysql.connector.errors import IntegrityError 
 from werkzeug.security import check_password_hash
 from flask_jwt_extended import create_access_token
@@ -97,7 +97,8 @@ def google_auth():
     # Se logea o se registra
     if persona:
         # USUARIO EXISTE: LOGIN
-        token_acceso = create_access_token(identity=persona['id_persona'])
+        #token_acceso = create_access_token(identity=persona['id_persona'])
+        token_acceso = create_access_token(identity=str(persona['id_persona']))
         
         return jsonify({
             "message": "Inicio de sesión de Google exitoso", 
@@ -129,7 +130,8 @@ def google_auth():
                      print("Error: create_person no devolvió 'id_persona' en el diccionario.")
                      return jsonify({"error": "Error de registro, ID no encontrado post-creación."}), 500
                 
-                token_acceso = create_access_token(identity=new_person_id)
+                #token_acceso = create_access_token(identity=new_person_id)
+                token_acceso = create_access_token(identity=str(new_person_id))
                 
                 return jsonify({
                     "message": "Registro y login de Google exitoso", 
@@ -172,7 +174,7 @@ def login_person():
 
         # 3. Crear el token si las credenciales son válidas
         # El 'identity' es el id_persona que será guardado en el token
-        access_token = create_access_token(identity=user_credentials['id_persona'])
+        access_token = create_access_token(identity=str(user_credentials['id_persona']))
         
         return jsonify({
             "message": "Inicio de sesión exitoso",

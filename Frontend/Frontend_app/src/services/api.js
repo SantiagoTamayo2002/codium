@@ -2,11 +2,10 @@ import axios from 'axios';
 
 // Creamos una instancia base de Axios
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:5000/api', // Tu URL base del API
+    baseURL: 'http://127.0.0.1:5000/api', 
 });
 
-// Interceptor de Petición (Request)
-// Esto se ejecuta ANTES de que cada petición sea enviada
+
 api.interceptors.request.use(
     (config) => {
         // Obtenemos el token de localStorage

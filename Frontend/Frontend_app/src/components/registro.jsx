@@ -29,14 +29,10 @@ function RegisterForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // <<< 4. USAR 'api' EN LUGAR DE 'axios' Y RUTA RELATIVA >>>
+
             const res = await api.post("/personas", formData);
             alert(res.data.message);
-            // Opcional: ¿hacer login también en registro manual?
-            // if (res.data.token) {
-            //     login(res.data.token);
-            //     navigate("/dashboard"); // Redirigir
-            // }
+
         } catch (error) {
             console.error(error);
             alert(error.response?.data?.error || "Error al registrar usuario");
@@ -59,14 +55,12 @@ function RegisterForm() {
         };
 
         try {
-            // <<< 5. USAR 'api' Y LA RUTA RELATIVA >>>
             const res = await api.post("/auth/google", userData);
             
-            // <<< 6. USAR LA FUNCIÓN login() DEL CONTEXTO >>>
+            // obtuve el token válido
             if (res.data.token) {
                 login(res.data.token);
                 
-                // <<< 7. REDIRIGIR AL USUARIO A SU PERFIL O DASHBOARD >>>
                 navigate("/profile"); // O '/dashboard', '/home', etc.
 
             } else {
