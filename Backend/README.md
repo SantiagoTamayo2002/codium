@@ -96,3 +96,17 @@ A03: Inyección SQL: Todas las consultas a la base de datos son parametrizadas, 
 A04: Diseño Inseguro: Se aplica el principio de menor privilegio. El usuario de la base de datos (app_user) tiene permisos limitados (CRUD), sin acceso a operaciones administrativas.
 Autenticación JWT: El acceso a los endpoints sensibles está protegido y requiere un JSON Web Token válido, que se verifica en cada solicitud mediante un middleware.
 Validación de Datos: Se realizan validaciones estrictas en los datos de entrada en todos los endpoints para prevenir la inyección de datos inesperados.
+
+## Endpoints de la API (Colección Postman)
+
+| Nombre del endpoint | Finalidad | Ruta | Respuesta |
+| :--- | :--- | :--- | :--- |
+| **Obtener Detalle Publicación** | Obtiene una publicación específica por ID, con sus comentarios y reacciones. | `GET /api/publicaciones/<id>` | `200 OK` (JSON del post) <br> `404 Not Found` |
+| **Login de Usuario** | Autentica a un usuario con correo y contraseña. | `POST /api/login` | `200 OK` (JSON con token) <br> `401 Unauthorized` |
+| **Obtener Retos** | Obtiene la lista paginada de todos los retos disponibles. | `GET /api/retos/` | `200 OK` (Array de retos) |
+| **Enviar Solución de Reto** | Envía el código fuente de un usuario para un reto específico. | `POST /api/retos/<id>/submit` | `201 Created` (JSON con `id_respuesta`) <br> `400 Bad Request` |
+| **Obtener Ranking** | Muestra la clasificación paginada de usuarios por puntaje. | `GET /api/ranking` | `200 OK` (Array de usuarios) |
+| **Simular Reto Aceptado** | (Dev) Simula que un usuario completó un reto, sumando puntaje. | `POST /api/_dev/simular_aceptado` | `200 OK` (JSON con mensaje) |
+| **Obtener Publicaciones (Feed)** | Obtiene la lista paginada de todas las publicaciones (el "feed"). | `GET /api/publicaciones/` | `200 OK` (Array de publicaciones) |
+| **Reaccionar a Publicación** | Crea o actualiza la reacción de un usuario a una publicación. | `POST /api/publicaciones/<id>/reacciones` | `201 Created` (Creada) <br> `200 OK` (Actualizada) |
+| **Comentar Publicación** | Agrega un nuevo comentario a una publicación específica. | `POST /api/publicaciones/<id>/comentarios` | `201 Created` (JSON con `id_comentario`) |
