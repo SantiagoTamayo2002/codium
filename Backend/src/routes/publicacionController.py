@@ -1,6 +1,6 @@
 # Backend/src/routes/publicacionController.py
 from flask import Blueprint, jsonify, request
-from ..models.persona.personaModel import PersonaModel 
+from ..models.personaModels import personaModel 
 from ..models.interaccionSocialModels.publicacionModel import PublicacionModel
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
