@@ -1,0 +1,108 @@
+/* --- Botón de Regreso --- */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    color: #4a5568; /* Gris oscuro */
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    transition: color 0.2s;
+    z-index: 10; /* Asegura que esté por encima de la tarjeta */
+}
+
+.back-button:hover {
+    color: #1e70ff; /* Color primario al pasar el mouse */
+}
+
+/* --- Alternar modo de formulario --- */
+.toggle-mode {
+    font-size: 0.9rem;
+    color: #4a5568;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #1e70ff; /* Color primario */
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 5px;
+    padding: 0;
+}
+
+.toggle-btn:hover {
+    text-decoration: underline;
+}
+
+/* --- Estilos del Formulario (Ajustes) --- */
+
+.register-card {
+    display: flex;
+    /* Necesitas que el contenedor principal permita el position: absolute del botón de regreso */
+    position: relative; 
+    /* ... otros estilos como box-shadow, width, etc. */
+}
+
+.register-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.register-content input {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.register-content button[type="submit"] {
+    background-color: #1e70ff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.register-content button[type="submit"]:hover {
+    background-color: #1a63e8;
+}
+
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    color: #a0aec0;
+    position: relative;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%; /* Ajusta el ancho de la línea */
+    height: 1px;
+    background-color: #e2e8f0;
+}
+
+.divider::before {
+    left: 0;
+}
+
+.divider::after {
+    right: 0;
+}

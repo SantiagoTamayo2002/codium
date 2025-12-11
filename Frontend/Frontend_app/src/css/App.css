@@ -1,0 +1,278 @@
+/* Variables CSS para colores */
+:root {
+    --color-primary: #1e70ff; /* Azul para el botón principal */
+    --color-secondary: #ffffff; /* Blanco */
+    --color-text-dark: #1f2937; /* Texto oscuro */
+    --color-text-light: #4b5563; /* Texto más claro */
+    --color-background: #ffffff;
+    --color-card-background: #ffffff;
+    --color-accent-green: #38a169; /* Verde para el bloque de la imagen */
+    --color-accent-orange-light: #ff7f50; /* Naranja/Melocotón claro */
+}
+
+/* Estilos Globales y Reset Básico */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background);
+    color: var(--color-text-dark);
+}
+
+.codechallenge-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* --- Botones --- */
+.btn-primary, .btn-secondary, .btn-text {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    border: 1px solid var(--color-primary);
+}
+
+.btn-primary:hover {
+    background-color: #1a63e8;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-text-dark);
+    border: none;
+}
+
+.btn-secondary:hover {
+    color: var(--color-primary);
+}
+
+.btn-text {
+    background: none;
+    color: var(--color-text-dark);
+    border: none;
+    padding: 10px; /* Ajuste para el botón "Ver retos" */
+}
+
+.btn-text:hover {
+    color: var(--color-primary);
+}
+
+/* --- Barra de Navegación (Navbar) --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+.logo-icon {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-right: 5px;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* --- Sección Hero --- */
+.hero-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 80px 0;
+}
+
+.hero-content {
+    max-width: 50%;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 1.25rem;
+    color: var(--color-text-light);
+    margin-bottom: 30px;
+}
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hero-image {
+    width: 400px;
+    height: 350px;
+    background-color: var(--color-accent-green); /* Fondo del bloque de imagen */
+    border-radius: 12px;
+    /* Simulación del diseño abstracto de la imagen */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- Sección de Beneficios --- */
+.benefits-section {
+    text-align: center;
+    padding: 80px 0;
+}
+
+.benefits-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.benefits-description {
+    font-size: 1.1rem;
+    color: var(--color-text-light);
+    margin-bottom: 50px;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.benefit-card {
+    background-color: var(--color-card-background);
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb; /* Borde sutil */
+}
+
+.benefit-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    /* El diseño original usa íconos SVG/JSX con el fondo de la tarjeta, pero simulamos con emojis */
+}
+
+.benefit-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.benefit-card p {
+    color: var(--color-text-light);
+    font-size: 1rem;
+}
+
+/* --- Footer --- */
+.footer {
+    padding: 40px 0 20px;
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 40px;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.footer-links a {
+    color: var(--color-text-light);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.footer-links a:hover {
+    color: var(--color-primary);
+}
+
+.social-media {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.social-media a {
+    margin: 0 10px;
+    color: var(--color-text-light);
+    text-decoration: none;
+}
+
+.social-media a:hover {
+    color: var(--color-primary);
+}
+
+.copyright {
+    color: var(--color-text-light);
+    font-size: 0.85rem;
+}
+
+/* --- Media Queries para Responsividad (Opcional, pero recomendado) --- */
+@media (max-width: 1024px) {
+    .hero-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-content {
+        max-width: 100%;
+        margin-bottom: 40px;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .codechallenge-page {
+        padding: 0 20px;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-image {
+        width: 100%;
+        height: 250px;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

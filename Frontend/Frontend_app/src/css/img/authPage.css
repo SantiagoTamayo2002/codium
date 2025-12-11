@@ -1,0 +1,225 @@
+/* --- Variables --- */
+:root {
+    --color-primary: #1e70ff;
+    --color-text-dark: #1f2937;
+    --color-text-light: #6b7280;
+    --color-background: #ffffff;
+    --color-border: #e5e7eb;
+}
+
+/* --- Contenedor Principal --- */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f9fafb; /* Fondo gris muy claro */
+    padding: 20px;
+    position: relative;
+}
+
+/* --- Botón de Regreso --- */
+.back-button-top {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    color: var(--color-text-light);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.back-button-top:hover {
+    color: var(--color-primary);
+}
+
+
+/* --- Tarjeta de Autenticación (El formulario central) --- */
+.auth-card {
+    background-color: var(--color-background);
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px; /* Ancho máximo para el formulario */
+}
+
+/* --- Encabezado --- */
+.auth-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.logo-codium {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.logo-icon {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.auth-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-text-dark);
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--color-text-light);
+    margin: 5px 0 0;
+}
+
+/* --- Selector de Modo (Iniciar Sesión / Registrarse) --- */
+.auth-selector {
+    display: flex;
+    background-color: #f0f2f5; 
+    border-radius: 8px;
+    margin-bottom: 30px;
+    padding: 5px;
+    position: relative; /* Contenedor para los botones */
+}
+
+.selector-btn {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.selector-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Formulario --- */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-dark);
+}
+
+.input-group input {
+    padding: 12px 15px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+/* Wrapper para el campo de contraseña con ícono */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper input {
+    width: 100%;
+    padding-right: 40px; /* Espacio para el ícono */
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: var(--color-text-light);
+}
+
+.forgot-password {
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    text-decoration: none;
+    margin-top: -10px; /* Ajusta el espacio sobre el botón */
+}
+
+/* Botón de Submit (Grande, Azul) */
+.btn-submit {
+    padding: 14px;
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #1a63e8;
+}
+
+/* Separador 'o' */
+.divider-or {
+    text-align: center;
+    margin: 30px 0;
+    color: var(--color-text-light);
+    position: relative;
+    font-size: 0.9rem;
+}
+
+.divider-or::before,
+.divider-or::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 45%; 
+    height: 1px;
+    background-color: var(--color-border);
+}
+
+.divider-or::before {
+    left: 0;
+}
+
+.divider-or::after {
+    right: 0;
+}
+
+/* Estilos para el botón de Google (Se adapta al estilo nativo de GoogleLogin, pero podemos forzar el ancho) */
+.google-login-wrapper > div {
+    display: flex;
+    justify-content: center;
+}
