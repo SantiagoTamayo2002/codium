@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import RegisterForm from './components/registro.jsx';
 import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
+import LadingPage from './pages/LadingPage';
+import Landing from './pages/LadingPage';
 
 // Creamos un layout simple para la navegación (opcional)
 function Layout() {
@@ -22,6 +24,8 @@ function App() {
             <Routes>
                 {/* --- RUTAS PÚBLICAS --- */}
                 {/* Ruta para registrarse (y loguearse con Google) */}
+                <Route path="/" element={<Landing />} />
+                 {/* Registro */}
                 <Route path="/register" element={<RegisterForm />} />
 
                 {/* --- RUTAS PROTEGIDAS --- */}
