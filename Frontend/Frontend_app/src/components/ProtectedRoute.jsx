@@ -22,5 +22,4 @@ function ProtectedRoute({ children }) {
     // 3. Si está autenticado, renderizar el componente hijo (la página)
     return children;
 }
-
 export default ProtectedRoute;

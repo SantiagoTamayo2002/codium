@@ -136,3 +136,37 @@ def dev_simular_juez():
     except Exception as e:
         print(f"Error en POST /_dev/simular_aceptado: {e}")
         return jsonify({"error": "Error interno del servidor"}), 500
+    
+
+
+# =====================================================================
+# GET Perfil de Usuario Logueado
+# =====================================================================
+@persona_bp.route('/profile', methods=['GET'])
+@jwt_required()
+def get_user_profile():
+    
+    # 1. Obtener la identidad (id_persona) del token JWT
+    try:
+        # get_jwt_identity() devuelve el valor que se pasó al crear el token
+        id_persona_str = get_jwt_identity()
+        id_persona_actual = int(id_persona_str)
+    except (ValueError, TypeError):
+        # Esto maneja un caso raro donde el token tiene un ID inválido
+        return jsonify({"error": "Token inválido o identidad no encontrada"}), 422
+
+    try:
+        # 2. Consultar la información del usuario por su ID
+        # Usamos el mismo método que ya existe para obtener los datos
+        persona = PersonaModel.get_persona_by_id(id_persona_actual)
+        
+        if persona:
+            # 3. Retornar los datos del perfil
+            return jsonify(persona), 200
+        else:
+            # Esto puede ocurrir si el usuario fue desactivado/eliminado
+            return jsonify({"error": "Usuario no encontrado o inactivo"}), 404
+            
+    except Exception as e:
+        print(f"Error en GET /profile: {e}")
+        return jsonify({"error": "Error interno del servidor al cargar el perfil"}), 500

@@ -61,7 +61,7 @@ function AuthPage() {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const res = await api.post("/personas", formData);
+            const res = await api.post("/register", formData);
             alert(res.data.message || "Registro exitoso. ¡Inicia sesión ahora!");
             // Después del registro, redirigimos a la vista de login
             setIsLoginMode(true); 
