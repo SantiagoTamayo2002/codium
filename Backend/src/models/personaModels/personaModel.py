@@ -353,6 +353,7 @@ class PersonaModel:
         cursor = conn.cursor()
         try:
             # Hashear la nueva contraseña
+            print("si llego aqui")
             hashed_password = generate_password_hash(new_password_plain)
 
             query = "UPDATE persona SET contraseña_hash = %s WHERE id_persona = %s AND esta_activo = TRUE"
