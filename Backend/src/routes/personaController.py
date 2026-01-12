@@ -79,6 +79,25 @@ def change_password(id_persona):
 
 
 ## -----------------------------------------------------
+## RUTA UPDATE (actualizar contraseña)
+## -----------------------------------------------------
+@persona_bp.route('/personas/<int:id_persona>/password', methods=['PUT'])
+def update_person_password(id_persona):
+    data = request.get_json()
+    if not data or 'new_password' not in data:
+        print(data)
+        return jsonify({"error": "No se proporcionó la nueva contraseña"}), 400
+
+    try:
+        new_password_plain = data['new_password']
+        response_dict, status_code = PersonaModel.changePassword(id_persona, new_password_plain)
+        return jsonify(response_dict), status_code
+        
+    except Exception as e:
+        print(f"Error en update_person_password: {e}")
+        return jsonify({"error": "Error interno del servidor"}), 500
+
+## -----------------------------------------------------
 ## RUTA DELETE 
 ## -----------------------------------------------------
 @persona_bp.route('/personas/<int:id_persona>', methods=['DELETE'])

@@ -1,4 +1,6 @@
 import mysql
+
+from flask import jsonify
 from ...database.db import get_db_connection
 
 
@@ -371,6 +373,35 @@ class PersonaModel:
             print(f"Error al ejecutar consulta en _developer_update_score: {e}")
             conn.rollback()
             raise Exception("Error interno al actualizar puntaje")
+        finally:
+            cursor.close()
+            conn.close()
+
+    
+    def changePassword(cls, id_persona, new_password_plain):
+        conn = get_db_connection()
+        if conn is None:
+            raise Exception("No se pudo conectar a la base de datos")
+
+        cursor = conn.cursor()
+        try:
+            # Hashear la nueva contraseña
+            print("si llego aqui")
+            hashed_password = generate_password_hash(new_password_plain)
+
+            query = "UPDATE persona SET contraseña_hash = %s WHERE id_persona = %s AND esta_activo = TRUE"
+            cursor.execute(query, (hashed_password, id_persona))
+
+            if cursor.rowcount == 0:
+                raise Exception("Persona no encontrada o inactiva")
+
+            conn.commit()
+            return {"message": "Contraseña actualizada"}, 200
+
+        except Exception as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            conn.rollback()
+            raise Exception("Error interno al cambiar la contraseña")
         finally:
             cursor.close()
             conn.close()
