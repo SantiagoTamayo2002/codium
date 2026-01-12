@@ -68,14 +68,40 @@ def create_person():
         return jsonify({"error": "Error interno del servidor"}), 500
 #-----------------------------------------------------------------------------------------------
 
+@auth_bp.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
 
+    if not data:
+        return jsonify({"error": "Body vacío"}), 400
+
+    if 'correo' not in data or 'contrasena_plana' not in data:
+        return jsonify({"error": "Datos incompletos"}), 400
+
+    user = PersonaModel.get_credentials(data['correo'])
+
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 401
+
+    if not check_password_hash(user['contraseña_hash'], data['contrasena_plana']):
+
+        return jsonify({"error": "Credenciales inválidas"}), 401
+
+    token = create_access_token(identity=str(user['id_persona']))
+
+    return jsonify({
+        "message": "Login exitoso",
+        "token": token,
+        "id_persona": user['id_persona'],
+        "id_rol": user['id_rol']
+    }), 200
 
 
 ## -----------------------------------------------------
 ## RUTA AUTENTICACIÓN GOOGLE (Login/Registro)
 ## -----------------------------------------------------
 
-@auth_bp.route('/auth/google', methods=['POST'])
+@auth_bp.route('/google', methods=['POST'])
 def google_auth():
     data = request.get_json()
     

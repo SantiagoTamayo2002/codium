@@ -1,0 +1,26 @@
+/* ===== CHARTS ===== */
+.charts {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.chart-card {
+  background-color: #0f172a;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 1.5rem;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.chart-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,.45);
+}
+
+.chart-card h4 {
+  margin-bottom: 1rem;
+  color: #e5e7eb;
+  font-size: 1.1rem;
+}

@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 persona_bp = Blueprint('persona_bp', __name__)
@@ -63,6 +64,18 @@ def update_person(id_persona):
         print(f"Error en update_person: {e}")
         return jsonify({"error": "Error interno del servidor"}), 500
 #-----------------------------------------------------------------------
+
+@persona_bp.route('/personas/<int:id_persona>/password', methods=['PUT'])
+def change_password(id_persona):
+    data = request.get_json()
+
+    if not data or 'password' not in data:
+        return jsonify({"error": "Contraseña requerida"}), 400
+
+    password_hash = generate_password_hash(data['password'])
+
+    response, status = PersonaModel.update_password(id_persona, password_hash)
+    return jsonify(response), status
 
 
 ## -----------------------------------------------------

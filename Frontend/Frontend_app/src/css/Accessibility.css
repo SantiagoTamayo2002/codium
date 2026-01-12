@@ -1,0 +1,50 @@
+.accessibility-wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.accessibility-toggle {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.accessibility-panel {
+  margin-bottom: 10px;
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.accessibility-panel button {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  background: #1e293b;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ===== ALTO CONTRASTE ===== */
+body.high-contrast {
+  background: black !important;
+  color: yellow !important;
+}
+
+body.high-contrast * {
+  background: black !important;
+  color: yellow !important;
+  border-color: yellow !important;
+}

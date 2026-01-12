@@ -43,6 +43,7 @@ CREATE TABLE `PERSONA` (
   `num_retos_resueltos`   INT NULL DEFAULT 0,
   `puntaje_total`         INT NULL DEFAULT 0,
   `token_refresco`        VARCHAR(255) NULL,
+  `esta_activo`           BOOLEAN NOT NULL DEFAULT TRUE,
   `id_rol`                INT NOT NULL,
   FOREIGN KEY (`id_rol`) REFERENCES `ROL` (`id_rol`)
 ) ENGINE=InnoDB;

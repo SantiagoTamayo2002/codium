@@ -66,3 +66,30 @@ class RespuestaModel:
         finally:
             cursor.close()
             conn.close()
+    @classmethod
+    def get_submissions_by_user_and_reto(cls, id_persona, id_reto):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        try:
+            query = """
+                SELECT 
+                    r.id_respuesta,
+                    r.fecha,
+                    r.puntaje,
+                    r.tiempo_ejecucion_ms,
+                    e.nombre_estado,
+                    l.nombre_lenguaje
+                FROM RESPUESTA r
+                JOIN ESTADO_RESPUESTA e ON r.id_estado = e.id_estado
+                JOIN LENGUAJE l ON r.id_lenguaje = l.id_lenguaje
+                WHERE r.id_persona = %s AND r.id_reto = %s
+                ORDER BY r.fecha DESC
+            """
+            cursor.execute(query, (id_persona, id_reto))
+            return cursor.fetchall()
+
+        finally:
+            cursor.close()
+            conn.close()
+

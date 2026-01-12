@@ -1,53 +1,89 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import RegisterForm from './components/registro.jsx';
 import ProfilePage from './pages/ProfilePage';
+import ProfileEditPage from './pages/ProfileEditPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import LadingPage from './pages/LadingPage';
 import Landing from './pages/LadingPage';
+import Dashboard from './pages/Dashboard';
+import Notifications from './pages/Notifications';
+import RetoActivo from './pages/RetoActivo.jsx';
+import ListaRetos from './pages/ListaRetos.jsx';
 
-// Creamos un layout simple para la navegación (opcional)
-function Layout() {
-    // Aquí podrías tener una barra de navegación, etc.
-    return (
-        <div>
-            {/* <h1>Mi Aplicación</h1> */}
-            {/* <nav>...</nav> */}
-        </div>
-    );
-}
+// 👉 IMPORTAR EL BOTÓN
+import AccessibilityButton from './components/AccessibilityButton';
 
 function App() {
-    return (
-        <>
-            <Layout />
-            <Routes>
-                {/* --- RUTAS PÚBLICAS --- */}
-                {/* Ruta para registrarse (y loguearse con Google) */}
-                <Route path="/" element={<Landing />} />
-                 {/* Registro */}
-                <Route path="/register" element={<RegisterForm />} />
+  return (
+    <>
+      {/* 🔹 BOTÓN DE ACCESIBILIDAD GLOBAL */}
+      <AccessibilityButton />
 
-                {/* --- RUTAS PROTEGIDAS --- */}
-                {/* Envolvemos ProfilePage con ProtectedRoute */}
-                <Route 
-                    path="/profile" 
-                    element={
-                        <ProtectedRoute>
-                            <ProfilePage />
-                        </ProtectedRoute>
-                    } 
-                />
+      <Routes>
+        {/* --- RUTAS PÚBLICAS --- */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/register" element={<RegisterForm />} />
 
-                {/* --- REDIRECCIONES --- */}
-                {/* Redirigir la ruta raíz a /register (o /profile si ya está logueado) */}
-                <Route path="/" element={<Navigate to="/register" replace />} />
+        {/* --- RUTAS PROTEGIDAS --- */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
 
-                {/* Ruta 'catch-all' para páginas no encontradas */}
-                <Route path="*" element={<div>404 - Página no encontrada</div>} />
-            </Routes>
-        </>
-    );
+        <Route
+          path="/profile/editar"
+          element={
+            <ProtectedRoute>
+              <ProfileEditPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/retos"
+          element={
+            <ProtectedRoute>
+              <ListaRetos />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/retos/:id"
+          element={
+            <ProtectedRoute>
+              <RetoActivo />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* --- 404 --- */}
+        <Route path="*" element={<div>404 - Página no encontrada</div>} />
+      </Routes>
+    </>
+  );
 }
 
 export default App;

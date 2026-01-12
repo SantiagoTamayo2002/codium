@@ -175,7 +175,7 @@ class RetosModel:
 
             # 2. Obtener los lenguajes permitidos
             query_lenguajes = """
-                SELECT l.nombre_lenguaje, l.version
+                SELECT l.id_lenguaje, l.nombre_lenguaje, l.version
                 FROM LENGUAJE l
                 JOIN RETO_LENGUAJE rl ON l.id_lenguaje = rl.id_lenguaje
                 WHERE rl.id_reto = %s

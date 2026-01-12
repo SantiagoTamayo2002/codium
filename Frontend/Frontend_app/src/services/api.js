@@ -2,9 +2,11 @@ import axios from 'axios';
 
 // Creamos una instancia base de Axios
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:5000/api', 
+    baseURL: 'http://127.0.0.1:5000/api',
+    headers: {
+        'Content-Type': 'application/json', // ✅ AGREGAR ESTO
+    }
 });
-
 
 api.interceptors.request.use(
     (config) => {

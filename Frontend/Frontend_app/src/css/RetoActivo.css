@@ -1,0 +1,231 @@
+/* General */
+.dashboard-root {
+  display: flex;
+  min-height: 100vh;
+  background: #020617;
+  color: #e5e7eb;
+}
+.content {
+  flex: 1;
+  padding: 2rem;
+}
+
+/* Header */
+.reto-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.badge.fácil { background: #16a34a; }
+.badge.medio { background: #eab308; color: #000; }
+.badge.difícil { background: #dc2626; }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #334155;
+}
+.tabs button {
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+}
+.tabs button.active {
+  border-bottom: 2px solid #6366f1;
+  color: #6366f1;
+}
+
+/* Descripción */
+.descripcion {
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  color: #cbd5f5;
+}
+
+/* Editor */
+.editor-box {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.editor-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.editor-top select {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+textarea {
+  flex-grow: 1;
+  width: 100%;
+  min-height: 300px;
+  background: #1E1E1E;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1rem;
+  font-family: "Fira Code", monospace;
+  resize: vertical;
+  margin-bottom: 0.5rem;
+}
+.editor-bottom {
+  display: flex;
+  justify-content: flex-end;
+}
+button {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover { background: #4f46e5; }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+/* ============================
+   TABLA DE ENVÍOS
+============================ */
+.envios-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+/* Header */
+.envios-table thead th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Filas */
+.envios-table tbody tr {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover efecto */
+.envios-table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* Celdas */
+.envios-table td {
+  padding: 0.9rem 1rem;
+  border-top: 1px solid #1e293b;
+  color: #e5e7eb;
+}
+
+/* Bordes redondeados */
+.envios-table tbody tr td:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.envios-table tbody tr td:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* ============================
+   ESTADOS
+============================ */
+.estado {
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Pendiente */
+.estado.pendiente {
+  background: rgba(234,179,8,0.15);
+  color: #facc15;
+}
+
+/* Aceptado */
+.estado.aceptado {
+  background: rgba(34,197,94,0.15);
+  color: #22c55e;
+}
+
+/* Error / Rechazado */
+.estado.error,
+.estado.rechazado {
+  background: rgba(239,68,68,0.15);
+  color: #ef4444;
+}
+
+/* ============================
+   RESPONSIVE TABLA
+============================ */
+@media (max-width: 768px) {
+  .envios-table thead {
+    display: none;
+  }
+
+  .envios-table,
+  .envios-table tbody,
+  .envios-table tr,
+  .envios-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .envios-table tbody tr {
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  .envios-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border: none;
+  }
+
+  .envios-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #94a3b8;
+  }
+}
+
+/* Loading */
+.loading { padding: 2rem; color: #e5e7eb; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .content { padding: 1rem; }
+  .editor-box { min-height: 400px; }
+}

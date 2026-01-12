@@ -1,96 +1,129 @@
-
-import '../css/App.css'; // Importa el archivo CSS
+import '../css/App.css';
 import React from 'react';
-// 1. Importar useNavigate para la navegación
 import { useNavigate } from 'react-router-dom';
-// Nota: Deberías importar también el CSS de tu archivo App.css
+import heroCodium from '../css/img/hero-codium.png';
 
 const Landing = () => {
-    // 2. Inicializar el hook de navegación
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    // Función para manejar el clic y redirigir
-    const handleNavigation = () => {
-        navigate('/register');
-    };
+  const goToRegister = () => navigate('/register');
+  const goToLogin = () => navigate('/login');
 
-    return (
-        <div className="codechallenge-page">
-            <header className="navbar">
-                <div className="logo">
-                    <span className="logo-icon">{"<>"}</span> CodeChallenge
-                </div>
-                <div className="nav-actions">
-                    {/* 3. Botón "Iniciar sesión" usa la función de navegación */}
-                    <button className="btn-secondary" onClick={handleNavigation}>
-                        Iniciar sesión
-                    </button>
-                    
-                    {/* 3. Botón "Registrarse" también usa la función de navegación */}
-                    <button className="btn-primary" onClick={handleNavigation}>
-                        Registrarse
-                    </button>
-                </div>
-            </header>
+  return (
+    <div className="landing-container">
 
-            <main>
-                <section className="hero-section">
-                    <div className="hero-content">
-                        <h1>Eleva tus Habilidades de Programación</h1>
-                        <p>La plataforma para probar y mejorar tus habilidades con retos diarios y un sistema de ranking competitivo.</p>
-                        <div className="hero-actions">
-                            {/* Botón "Registrarse Gratis" también usa la función de navegación */}
-                            <button className="btn-primary" onClick={handleNavigation}>
-                                Registrarse Gratis
-                            </button>
-                            <button className="btn-text">Ver retos</button>
-                        </div>
-                    </div>
-                    <div className="hero-image">
-                        
-                    </div>
-                </section>
-
-                <section className="benefits-section">
-                    <h2>Descubre los Beneficios Clave</h2>
-                    <p className="benefits-description">Nuestra plataforma está diseñada para ayudarte a crecer como desarrollador de una manera divertida y efectiva.</p>
-
-                    <div className="benefits-grid">
-                        <div className="benefit-card">
-                            <div className="benefit-icon">🗓️</div>
-                            <h3>Retos Diarios</h3>
-                            <p>Enfrentate a nuevos desafíos de codificación todos los días para mantener tus habilidades afiladas.</p>
-                        </div>
-                        <div className="benefit-card">
-                            <div className="benefit-icon">📊</div>
-                            <h3>Sistema de Ranking</h3>
-                            <p>Compite con otros programadores y sube en la clasificación para demostrar tu talento.</p>
-                        </div>
-                        <div className="benefit-card">
-                            <div className="benefit-icon">🏆</div>
-                            <h3>Gamificación</h3>
-                            <p>Gana puntos, insignias y logros a medida que resuelves problemas y alcanzas nuevas metas.</p>
-                        </div>
-                    </div>
-                </section>
-            </main>
-
-            <footer className="footer">
-                <div className="footer-links">
-                    <a href="#">Acerca de</a>
-                    <a href="#">Contacto</a>
-                    <a href="#">Términos de servicio</a>
-                    <a href="#">Política de Privacidad</a>
-                </div>
-                <div className="social-media">
-                    <a href="#">🐦</a>
-                    <a href="#">🔗</a>
-                    <a href="#">🐙</a>
-                </div>
-                <p className="copyright">© 2024 CodeChallenge. Todos los derechos reservados.</p>
-            </footer>
+      {/* ===== NAVBAR ===== */}
+      <header className="navbar">
+        <div className="logo">
+          <span className="logo-icon">&lt;/&gt;</span>
+          <span className="logo-text">Codium</span>
         </div>
-    );
+
+       
+          <div className="hero-buttons">
+  <button className="btn-primary" onClick={goToRegister}>
+    Iniciar Sesión
+  </button>
+        </div>
+      </header>
+
+      {/* ===== HERO ===== */}
+      <main>
+        <section className="hero">
+          <div className="hero-text">
+            <h1>
+              Domina la Programación <br />
+              <span>Retos Reales. Ranking Global.</span>
+            </h1>
+
+            <p>
+              Codium es la plataforma donde desarrolladores ponen a prueba
+              sus habilidades con retos diarios, gamificación y competencias reales.
+            </p>
+
+           
+          </div>
+
+          {/* 
+            👉 IMAGEN PRINCIPAL (Hero Image)
+            Aquí va:
+            - Mockup de la plataforma
+            - Dashboard con ranking
+            - Código en pantalla
+            Ejemplo:
+            <img src="/images/hero-codium.png" alt="Plataforma Codium" />
+          */}
+          <div className="hero-image">
+  <img src={heroCodium} alt="Plataforma Codium" />
+</div>
+
+        </section>
+
+        {/* ===== BENEFICIOS ===== */}
+        <section className="features">
+          <h2>¿Por qué elegir Codium?</h2>
+          <p className="section-subtitle">
+            Diseñado por y para desarrolladores que buscan crecer profesionalmente.
+          </p>
+
+          <div className="features-grid">
+
+            <div className="feature-card">
+              <div className="feature-icon">🧠</div>
+              <h3>Retos Inteligentes</h3>
+              <p>
+                Problemas reales de lógica, algoritmos y desarrollo backend/frontend.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon">📈</div>
+              <h3>Ranking Competitivo</h3>
+              <p>
+                Compite con otros programadores y demuestra tu nivel técnico.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon">🏅</div>
+              <h3>Gamificación</h3>
+              <p>
+                Insignias, logros y recompensas que impulsan tu aprendizaje.
+              </p>
+            </div>
+
+          </div>
+        </section>
+      </main>
+
+      {/* ===== FOOTER ===== */}
+      <footer className="footer">
+        <div className="footer-links">
+          <a href="#">Acerca de</a>
+          <a href="#">Contacto</a>
+          <a href="#">Términos</a>
+          <a href="#">Privacidad</a>
+        </div>
+
+        <div className="social-icons">
+          {/* 
+            👉 ICONOS REDES
+            Puedes usar:
+            - SVG
+            - FontAwesome
+            - React Icons
+          */}
+          <a href="#">🐦</a>
+          <a href="#">💼</a>
+          <a href="#">🐙</a>
+        </div>
+
+        <p className="copyright">
+          © 2024 Codium. Todos los derechos reservados.
+        </p>
+      </footer>
+    </div>
+  );
 };
 
 export default Landing;

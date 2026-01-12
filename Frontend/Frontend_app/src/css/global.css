@@ -1,0 +1,72 @@
+/* CONTENEDOR PRINCIPAL */
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* MODO CLARO */
+.app-container.light, .sidebar.light {
+  background-color: #fff;
+  color: #333;
+}
+
+.app-container.light .main-content {
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.sidebar.light .menu-item {
+  color: #333;
+}
+
+.sidebar.light .menu-item:hover {
+  background-color: #eee;
+}
+
+.sidebar.light .menu-item.logout {
+  background-color: #ff4d4f;
+  color: #fff;
+}
+
+/* MODO OSCURO */
+.app-container.dark, .sidebar.dark {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+.app-container.dark .main-content {
+  background-color: #121212;
+  color: #fff;
+}
+
+.sidebar.dark .menu-item {
+  color: #fff;
+}
+
+.sidebar.dark .menu-item:hover {
+  background-color: #333;
+}
+
+.sidebar.dark .menu-item.logout {
+  background-color: #ff4d4f;
+  color: #fff;
+}
+
+/* BOTÓN DE CAMBIO DE MODO */
+.toggle-theme-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+}

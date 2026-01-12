@@ -1,0 +1,129 @@
+/* ===============================
+   RETOS
+=============================== */
+
+.retos-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* HEADER */
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.page-header .subtitle {
+  color: #64748b;
+}
+
+/* STATES */
+.page-state {
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #64748b;
+}
+
+.empty-state span {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* GRID */
+.retos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.2rem;
+}
+
+/* CARD */
+.reto-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+border: 1px solid #e5e7eb;
+}
+
+.reto-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.1);
+}
+
+.reto-card h3 {
+  color: #0f172a; /* slate-900 */
+  font-weight: 700;
+}
+.reto-card p {
+  color: #334155; /* slate-700 */
+}
+
+/* Link acción */
+.reto-card .action {
+  color: #2563eb; /* blue-600 */
+}
+
+.reto-card:hover .action {
+  color: #1d4ed8; /* blue-700 */
+}
+
+/* BADGE */
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: 0.3px;
+}
+
+/* difficulty colors */
+.badge.facil {
+  background: #eab308;
+  color: #1f2937;
+}
+
+.badge.medio {
+  background: #eab308;
+  color: #1f2937;
+}
+
+.badge.dificil {
+ background: #eab308;
+  color: #1f2937;
+}
+
+
+/* ACTION */
+.action {
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #0284c7;
+}
+
+/* ===============================
+   RESPONSIVE
+=============================== */
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reto-card {
+    padding: 1.2rem;
+  }
+}

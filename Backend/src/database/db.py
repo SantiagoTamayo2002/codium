@@ -1,9 +1,9 @@
 import mysql.connector
 
 DB_CONFIG = {
-    'host': '127.0.0.1',
+    'host': 'localhost',
     'user': 'app_user',
-    'password': 'S@ntiagoñ2002',
+    'password': 'CodiumApp2025@',
     'database': 'codium_db',
     'port': 3306
 }

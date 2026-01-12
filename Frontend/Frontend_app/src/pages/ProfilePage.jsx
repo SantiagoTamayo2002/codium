@@ -1,98 +1,134 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import api from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import api from "../services/api";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
 import "../css/ProfilePage.css";
+import { FaUserEdit } from "react-icons/fa";
+
+import {
+  ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, Tooltip,
+  PieChart, Pie, Cell
+} from "recharts";
 
 function ProfilePage() {
-    const { user, logout } = useAuth();
-    const navigate = useNavigate();
-    
-    const [profileData, setProfileData] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-            if (!user) {
-                navigate('/register');
-                return;
-            }
+  useEffect(() => {
+    api.get("/profile")
+      .then(res => setProfileData(res.data))
+      .catch(() => setError("Error al cargar el perfil"))
+      .finally(() => setLoading(false));
+  }, []);
 
-            setLoading(true);
-            try {
-                const res = await api.get('/profile'); 
-                setProfileData(res.data);
-                setError(null);
-            } catch (err) {
-                console.error("Error al obtener perfil:", err);
-                setError(err.response?.data?.error || 'Error al cargar el perfil.');
-                
-                if (err.response && (err.response.status === 401 || err.response.status === 422)) {
-                    logout();
-                    navigate('/register');
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
+  if (loading) return <div className="page-state">Cargando perfil…</div>;
+  if (error) return <div className="page-state error">{error}</div>;
 
-        fetchProfile();
-    }, [user, logout, navigate]);
+  const avatar =
+    profileData.avatar ||
+    `https://ui-avatars.com/api/?name=${profileData.nombre_usuario}&background=6366f1&color=fff`;
 
-    const handleLogout = () => {
-        logout();
-        navigate('/register');
-    };
+  /* ===== DATA PARA GRÁFICAS ===== */
+  const puntosData = [
+    { name: "Puntos", value: profileData.puntos_totales }
+  ];
 
-    // ESTADO DE CARGA
-    if (loading) {
-        return (
-            <div className="profile-container">
-                <p>Cargando perfil</p>
-            </div>
-        );
-    }
+  const retosCompletados = profileData.retos_completados?.length || 0;
+  const retosTotales = profileData.total_retos || retosCompletados;
 
-    // ESTADO DE ERROR
-    if (error) {
-        return (
-            <div className="profile-container">
-                <div className="error-message">Error: {error}</div>
-                <button className="profile-button" onClick={handleLogout}>
-                    Volver al inicio
-                </button>
-            </div>
-        );
-    }
+  const retosData = [
+    { name: "Completados", value: retosCompletados },
+    { name: "Pendientes", value: Math.max(0, retosTotales - retosCompletados) }
+  ];
 
-    // ESTADO SIN DATOS
-    if (!profileData) {
-        return (
-            <div className="profile-container">
-                <p>No hay datos disponibles</p>
-            </div>
-        );
-    }
+  const COLORS = ["#6366f1", "#334155"];
 
-    // MOSTRAR PERFIL
-    return (
-        <div className="profile-container">
-            <h2>Perfil de Usuario</h2>
-            <p><strong>ID de Usuario:</strong> {user.id}</p>
-            <hr />
-            <h4>Datos de la Base de Datos</h4>
-            <p><strong>Nombre:</strong> {profileData.nombre}</p>
-            <p><strong>Apellidos:</strong> {profileData.apellidos}</p>
-            <p><strong>Email:</strong> {profileData.correo}</p>
-            <p><strong>Username:</strong> {profileData.nombre_usuario}</p>
-            <p><strong>Rol:</strong> {profileData.id_rol}</p>
+  return (
+    <div className="dashboard-root">
+      <Sidebar />
 
-            <button className="profile-button" onClick={handleLogout}>
-                Cerrar Sesión
+      <main className="content">
+        {/* ===== HEADER ===== */}
+        <div className="profile-header">
+          <div
+            className="avatar-large"
+            style={{ backgroundImage: `url(${avatar})` }}
+          />
+          <div>
+            <h1>{profileData.nombre} {profileData.apellidos}</h1>
+            <p className="username">@{profileData.nombre_usuario}</p>
+            <p className="email">{profileData.email}</p>
+
+            <button
+              className="btn-primary"
+              onClick={() => navigate("/profile/editar")}
+            >
+              <FaUserEdit /> Editar perfil
             </button>
+          </div>
         </div>
-    );
+
+        {/* ===== STATS ===== */}
+        <section className="stats">
+          <div className="stat-card">
+            <p>Puntos Totales</p>
+            <h3>{profileData.puntos_totales}</h3>
+          </div>
+
+          <div className="stat-card">
+            <p>Retos Completados</p>
+            <h3>{retosCompletados}</h3>
+          </div>
+
+          <div className="stat-card">
+            <p>Racha Actual</p>
+            <h3>🔥 {profileData.racha_actual || 0} días</h3>
+          </div>
+        </section>
+
+        {/* ===== GRÁFICAS ===== */}
+        <section className="charts">
+          {/* --- PUNTOS --- */}
+          <div className="chart-card">
+            <h4>📈 Progreso de Puntos</h4>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={puntosData}>
+                <XAxis dataKey="name" stroke="#9ca3af" />
+                <YAxis stroke="#9ca3af" />
+                <Tooltip />
+                <Bar dataKey="value" fill="#6366f1" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* --- RETOS --- */}
+          <div className="chart-card">
+            <h4>🧩 Retos</h4>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={retosData}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={4}
+                >
+                  {retosData.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
 }
 
 export default ProfilePage;

@@ -1,0 +1,11 @@
+.feed-container { max-width: 700px; margin: 20px auto; display: flex; flex-direction: column; gap: 20px; }
+.post-card { background: #fff; padding: 15px 20px; border-radius: 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
+.post-header { display: flex; justify-content: space-between; font-size: 0.9rem; color: #555; margin-bottom: 10px; }
+.author { font-weight: bold; }
+.post-content { margin-bottom: 15px; }
+.post-actions button { background: #f1f1f1; border: none; margin-right: 8px; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+.post-actions button:hover { background: #ddd; }
+.new-post { display: flex; flex-direction: column; margin-bottom: 20px; }
+.new-post textarea { resize: none; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 10px; }
+.new-post button { align-self: flex-end; padding: 6px 15px; border: none; border-radius: 5px; background: #4CAF50; color: #fff; cursor: pointer; }
+.new-post button:hover { background: #45a049; }

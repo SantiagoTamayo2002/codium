@@ -5,6 +5,20 @@ from ...database.db import get_db_connection
 
 class PersonaModel:
 
+    @staticmethod
+    def get_credentials(correo):
+        sql = """
+        SELECT id_persona, correo, contrasena, id_rol
+        FROM persona
+        WHERE correo = %s
+        """
+        try:
+            connection = get_db_connection()
+            with connection.cursor(dictionary=True) as cursor:
+                cursor.execute(sql, (correo,))
+                return cursor.fetchone()
+        finally:
+            connection.close()
 
     @classmethod
     def get_all_persons(cls, page=1, per_page=20):
@@ -183,6 +197,25 @@ class PersonaModel:
         finally:
             cursor.close()
             conn.close()
+    @classmethod
+    def update_password(cls, id_persona, password_hash):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        query = """
+        UPDATE persona
+        SET contraseña_hash = %s
+        WHERE id_persona = %s AND esta_activo = TRUE
+        """
+        cursor.execute(query, (password_hash, id_persona))
+
+        # ❌ NO usar rowcount para 404 aquí
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            return {"message": "Contraseña no modificada"}, 200
+
+        return {"message": "Contraseña actualizada correctamente"}, 200
 
 
     @classmethod

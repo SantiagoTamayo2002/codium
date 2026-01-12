@@ -125,43 +125,63 @@ def get_reto(id_reto):
 @retos_bp.route('/<int:id_reto>/submit', methods=['POST'])
 @jwt_required()
 def submit_respuesta(id_reto):
-    
-    # 1. Validar identidad del usuario
+
+    # 1. Usuario autenticado
     try:
-        id_persona_str = get_jwt_identity()
-        id_persona_actual = int(id_persona_str)
-    except (ValueError, TypeError):
-        return jsonify({"error": "Token inválido (identidad no numérica)"}), 422
+        id_persona = int(get_jwt_identity())
+    except:
+        return jsonify({"error": "Token inválido"}), 422
 
-    if not PersonaModel.get_persona_by_id(id_persona_actual):
-        return jsonify({"error": "Usuario del token no encontrado"}), 401
+    if not PersonaModel.get_persona_by_id(id_persona):
+        return jsonify({"error": "Usuario no encontrado"}), 401
 
-    # 2. Obtener y validar el JSON de entrada
-    data = request.json
-    if not data:
-        return jsonify({"error": "No se recibió ningún dato"}), 400
-        
-    codigo_fuente = data.get('codigo_fuente')
-    id_lenguaje = data.get('id_lenguaje')
+    # 2. JSON (FORZADO)
+    data = request.get_json(force=True)
+    print("DATA RECIBIDA:", data)
 
-    if not codigo_fuente or not id_lenguaje:
-        return jsonify({"error": "Faltan 'codigo_fuente' o 'id_lenguaje'"}), 400
-    
+    codigo_fuente = data.get("codigo_fuente")
+    id_lenguaje = data.get("id_lenguaje")
+
+    if codigo_fuente is None or id_lenguaje is None:
+        return jsonify({
+            "error": "Faltan 'codigo_fuente' o 'id_lenguaje'",
+            "data": data
+        }), 400
+
     if not isinstance(id_lenguaje, int):
-        return jsonify({"error": "'id_lenguaje' debe ser un número entero (ID)"}), 400
+        return jsonify({"error": "id_lenguaje debe ser INT"}), 400
 
-    # (Validación extra futura: ¿El id_lenguaje está permitido para este id_reto?)
-    
-    # 3. Llamar al modelo para crear el envío "Pendiente"
+    # 3. Guardar respuesta
+    response, status = RespuestaModel.create_submission(
+        id_persona=id_persona,
+        id_reto=id_reto,
+        id_lenguaje=id_lenguaje,
+        codigo_fuente=codigo_fuente
+    )
+
+    return jsonify(response), status
+#-------------------------------------------------------------------------------
+# RUTA GET para OBTENER ENVÍOS DEL USUARIO EN UN RETO
+#-------------------------------------------------------------------------------
+@retos_bp.route('/<int:id_reto>/envios', methods=['GET'])
+@jwt_required()
+def get_envios_reto(id_reto):
+
     try:
-        response, status_code = RespuestaModel.create_submission(
-            id_persona=id_persona_actual,
-            id_reto=id_reto,
-            id_lenguaje=id_lenguaje,
-            codigo_fuente=codigo_fuente
+        id_persona = int(get_jwt_identity())
+    except:
+        return jsonify({"error": "Token inválido"}), 422
+
+    if not PersonaModel.get_persona_by_id(id_persona):
+        return jsonify({"error": "Usuario no encontrado"}), 401
+
+    try:
+        envios = RespuestaModel.get_submissions_by_user_and_reto(
+            id_persona=id_persona,
+            id_reto=id_reto
         )
-        return jsonify(response), status_code
-        
+        return jsonify(envios), 200
+
     except Exception as e:
-        print(f"Error en retosController POST /<id>/submit: {e}")
-        return jsonify({"error": "Error interno del servidor", "detalle": str(e)}), 500
+        print("Error obteniendo envíos:", e)
+        return jsonify({"error": "Error interno"}), 500
