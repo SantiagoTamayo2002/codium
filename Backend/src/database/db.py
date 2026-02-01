@@ -3,7 +3,7 @@ import mysql.connector
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'app_user',
-    'password': 'Santiago_2002ñ',
+    'password': 'S@ntiagoñ2002',
     'database': 'codium_db',
     'port': 3306
 }
