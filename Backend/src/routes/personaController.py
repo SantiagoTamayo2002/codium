@@ -24,7 +24,6 @@ def get_personas():
     except Exception as e:
         print(f"Error en get_personas: {e}")
         return jsonify({"error": "Error interno del servidor"}), 500
-# ... (Fin) ...
 
 
 ## ---------------------------------------------------------------------
@@ -41,8 +40,6 @@ def get_person(id_persona):
     except Exception as e:
         print(f"Error en get_person: {e}")
         return jsonify({"error": "Error interno del servidor"}), 500
-# ... (Fin) ...
-
 
 
 ## -----------------------------------------------------
@@ -143,6 +140,8 @@ def get_ranking_leaderboard():
     except Exception as e:
         print(f"Error en GET /ranking: {e}")
         return jsonify({"error": "Error interno del servidor"}), 500
+
+
 
 # =====================================================================
 #  NUEVA RUTA: Simulador de Juez (Temporal)

@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 publicacion_bp = Blueprint('publicacion_bp', __name__)
 
+
 def get_current_user_id():
     """ Función helper para obtener y validar la identidad del token """
     try:
@@ -15,7 +16,6 @@ def get_current_user_id():
     except (ValueError, TypeError):
         return None, jsonify({"error": "Token inválido (identidad no numérica)"}), 422
 
-# --- RUTAS DE PUBLICACIONES (FEED) ---
 
 @publicacion_bp.route('/', methods=['POST'])
 @jwt_required()
@@ -34,31 +34,27 @@ def crear_publicacion():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+
 @publicacion_bp.route('/', methods=['GET'])
-@jwt_required()
-def obtener_publicaciones():
-    if get_current_user_id()[1]: # Solo validar token
-        return get_current_user_id()[1]
-        
+@jwt_required() # <--- AHORA ES OBLIGATORIO ESTAR LOGUEADO PARA VER EL MURO CORRECTAMENTE
+def obtener_feed():
+    # 1. Obtenemos quién está mirando
+    try:
+        id_persona_viewer = int(get_jwt_identity())
+    except:
+        return jsonify({"error": "Token inválido"}), 422
+
     try:
         page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 10, type=int)
-        response, status = PublicacionModel.get_all_posts(page, per_page)
-        return jsonify(response), status
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@publicacion_bp.route('/<int:id_publicacion>', methods=['GET'])
-@jwt_required()
-def obtener_publicacion_detalle(id_publicacion):
-    if get_current_user_id()[1]: # Solo validar token
-        return get_current_user_id()[1]
         
-    try:
-        response, status = PublicacionModel.get_post_by_id(id_publicacion)
-        return jsonify(response), status
+        # 2. Pasamos ese ID al modelo nuevo
+        posts = PublicacionModel.get_all_posts(id_persona_viewer, page=page)
+        
+        return jsonify(posts), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(e)
+        return jsonify({"error": "Error interno"}), 500
 
 # --- RUTAS DE COMENTARIOS ---
 
@@ -102,6 +98,8 @@ def reaccionar_publicacion(id_publicacion):
         return jsonify(response), status
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
 
 @publicacion_bp.route('/<int:id_publicacion>/reacciones', methods=['DELETE'])
 @jwt_required()
@@ -112,5 +110,17 @@ def quitar_reaccion(id_publicacion):
     try:
         response, status = PublicacionModel.remove_reaction(id_persona, id_publicacion)
         return jsonify(response), status
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+# --- OBTENER LISTA DE COMENTARIOS ---
+@publicacion_bp.route('/<int:id_publicacion>/comentarios', methods=['GET'])
+@jwt_required()
+def obtener_comentarios(id_publicacion):
+    try:
+        # Llamamos al método nuevo del modelo
+        comentarios = PublicacionModel.get_comments_by_post(id_publicacion)
+        return jsonify(comentarios), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

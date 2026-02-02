@@ -34,37 +34,66 @@ class PublicacionModel:
             cursor.close()
             conn.close()
 
+
     @classmethod
-    def get_all_posts(cls, page=1, per_page=10):
-        """ Obtiene un 'feed' de publicaciones, uniendo con el autor """
+    def get_all_posts(cls, id_persona_viewer, page=1, per_page=10):
+        """ 
+        Obtiene el feed con:
+        - Datos del autor
+        - Conteo de likes
+        - Conteo de comentarios
+        - Si el usuario que ve (viewer) le dio like o no
+        """
         conn = get_db_connection()
-        if conn is None:
-            raise Exception("Sin respuesta de la base de datos")
-        
         cursor = conn.cursor(dictionary=True)
         try:
             offset = (page - 1) * per_page
+            
+            # Esta consulta es la clave. Usamos subqueries para los contadores.
             query = """
                 SELECT 
                     p.id_publicacion, 
                     p.contenido, 
                     p.fecha,
-                    per.id_persona,
-                    per.nombre_usuario
+                    per.nombre_usuario,
+                    per.id_persona as id_autor,
+                    
+                    (SELECT COUNT(*) FROM REACCION r 
+                     WHERE r.id_publicacion = p.id_publicacion) as likes,
+                     
+                    (SELECT COUNT(*) FROM COMENTARIO c 
+                     WHERE c.id_publicacion = p.id_publicacion) as num_comentarios,
+                     
+                    (SELECT COUNT(*) FROM REACCION r2 
+                     WHERE r2.id_publicacion = p.id_publicacion 
+                     AND r2.id_persona = %s) as liked_by_me
+
                 FROM PUBLICACION p
                 JOIN PERSONA per ON p.id_persona = per.id_persona
                 ORDER BY p.fecha DESC
                 LIMIT %s OFFSET %s
             """
-            cursor.execute(query, (per_page, offset))
+            
+            # Pasamos id_persona_viewer para saber si TÚ diste like
+            cursor.execute(query, (id_persona_viewer, per_page, offset))
             posts = cursor.fetchall()
-            return posts, 200
+            
+            # Convertir el resultado de liked_by_me (1 o 0) a Booleano (True/False)
+            for post in posts:
+                post['liked_by_me'] = bool(post['liked_by_me'])
+                # Convertir fechas a string si es necesario
+                if post['fecha']:
+                    post['fecha'] = post['fecha'].isoformat()
+
+            return posts
+
         except Exception as e:
             print(f"Error en get_all_posts: {e}")
-            raise Exception("Error interno al consultar publicaciones")
+            raise Exception("Error al obtener publicaciones")
         finally:
             cursor.close()
             conn.close()
+
 
     @classmethod
     def get_post_by_id(cls, id_publicacion):
@@ -223,6 +252,40 @@ class PublicacionModel:
             conn.rollback()
             print(f"Error en remove_reaction: {e}")
             raise Exception("Error interno al eliminar reacción")
+        finally:
+            cursor.close()
+            conn.close()
+    
+
+    @classmethod
+    def get_comments_by_post(cls, id_publicacion):
+        """ Obtiene la lista detallada de comentarios para una publicación """
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            query = """
+                SELECT 
+                    c.id_comentario,
+                    c.contenido,
+                    c.fecha,
+                    p.nombre_usuario
+                FROM COMENTARIO c
+                JOIN PERSONA p ON c.id_persona = p.id_persona
+                WHERE c.id_publicacion = %s
+                ORDER BY c.fecha ASC
+            """
+            cursor.execute(query, (id_publicacion,))
+            comments = cursor.fetchall()
+            
+            # Formatear fechas para que no den error al convertir a JSON
+            for c in comments:
+                if c['fecha']:
+                    c['fecha'] = c['fecha'].isoformat()
+            
+            return comments
+        except Exception as e:
+            print(f"Error getting comments: {e}")
+            return []
         finally:
             cursor.close()
             conn.close()

@@ -16,10 +16,7 @@ retos_bp = Blueprint('retos_bp', __name__)
 @retos_bp.route('/', methods=['POST'])
 @jwt_required() 
 def crear_nuevo_reto():
-    
-    # --- CORRECCIÓN INICIA ---
-    #por lo pronto....
-    # 1. Validar que el usuario del token existe y es un entero válido
+
     try:
         id_persona_str = get_jwt_identity()
         id_persona_actual = int(id_persona_str) # Convertir de string a int
@@ -55,36 +52,19 @@ def crear_nuevo_reto():
 #-------------------------------------------------------------------------------
 # RUTA GET para OBTENER TODOS los retos (con paginación)
 #-------------------------------------------------------------------------------
+
 @retos_bp.route('/', methods=['GET'])
-@jwt_required() 
-def get_retos():
-    
-    # --- CORRECCIÓN INICIA ---
-    # Validar que el usuario del token existe y es un entero válido
+# @jwt_required()  <-- Descomenta si quieres que SOLO usuarios logueados vean la lista
+def listar_retos_disponibles():
     try:
-        id_persona_str = get_jwt_identity()
-        id_persona_actual = int(id_persona_str) # Convertir de string a int
-    except (ValueError, TypeError):
-        return jsonify({"error": "Token inválido (identidad no numérica)"}), 422
-
-    if not PersonaModel.get_persona_by_id(id_persona_actual):
-        return jsonify({"error": "Usuario del token no encontrado"}), 401
-    # --- CORRECCIÓN TERMINA ---
-
-    try:
-        # Obtener parámetros de paginación de la URL
-        page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 10, type=int)
-        
-        # Llamar al modelo para obtener los retos
-        lista_retos = RetosModel.get_all_retos(page, per_page)
-        
-        return jsonify(lista_retos), 200
-
+        # Usamos el método existente en tu modelo
+        # Asumo que se llama 'get_all_retos', si se llama diferente, ajusta el nombre aquí.
+        retos = RetosModel.get_all_retos() 
+        return jsonify(retos), 200
     except Exception as e:
-        print(f"Error en retosController GET /: {e}")
-        return jsonify({"error": "Error interno del servidor"}), 500
-
+        print(f"Error al listar retos: {e}")
+        return jsonify({"error": "Error al obtener los retos"}), 500
+    
 #-------------------------------------------------------------------------------
 # RUTA GET para OBTENER UN reto por su ID
 #-------------------------------------------------------------------------------
@@ -120,7 +100,7 @@ def get_reto(id_reto):
 
 
 #-------------------------------------------------------------------------------
-# RUTA POST para ENVIAR (SUBMIT) una respuesta a un reto
+# RUTA POST para ENVIAR una respuesta a un reto
 #-------------------------------------------------------------------------------
 @retos_bp.route('/<int:id_reto>/submit', methods=['POST'])
 @jwt_required()

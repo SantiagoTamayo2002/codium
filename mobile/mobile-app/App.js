@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
+import FeedScreen from './FeedScreen'; // Probablemente ya tienes esto
+import MainTabScreen from './MainTabScreen'; // <--- AGREGA ESTA LÍNEA
+import React, { useState, useEffect } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -7,36 +8,133 @@ import {
   TextInput, 
   TouchableOpacity, 
   KeyboardAvoidingView, 
-  Platform,
-  ScrollView,
-  ActivityIndicator,
-  Alert
+  Platform, 
+  ScrollView, 
+  ActivityIndicator, 
+  Alert,
+  SafeAreaView
 } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+
+// Importamos el nuevo componente de Inicio
+import HomeScreen from './HomeScreen'; 
+
+// ⚠️ IMPORTANTE: Ajusta esta IP a la de tu computadora (ipconfig/ifconfig)
+const API_URL = Platform.OS === 'web' 
+  ? 'http://localhost:5000/api' 
+  : 'http://192.168.1.114:5000/api'; // <--- VERIFICA ESTA IP
+
+// --- FUNCIONES AUXILIARES DE ALMACENAMIENTO (WEB vs MOVIL) ---
+async function save(key, value) {
+  if (Platform.OS === 'web') {
+    try { localStorage.setItem(key, value); } catch (e) { console.error(e); }
+  } else {
+    await SecureStore.setItemAsync(key, value);
+  }
+}
+
+async function getValue(key) {
+  if (Platform.OS === 'web') {
+    return localStorage.getItem(key);
+  } else {
+    return await SecureStore.getItemAsync(key);
+  }
+}
+
+async function deleteValue(key) {
+  if (Platform.OS === 'web') {
+    localStorage.removeItem(key);
+  } else {
+    await SecureStore.deleteItemAsync(key);
+  }
+}
+// -------------------------------------------------------------
 
 export default function App() {
-  // --- ESTADOS ---
-  const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
-  
-  // Datos del formulario
-  const [nombre, setNombre] = useState('');
-  const [usuario, setUsuario] = useState('');
-  const [institucion, setInstitucion] = useState('');
+  const [userToken, setUserToken] = useState(null);
+  const [userInfo, setUserInfo] = useState(null); // Guardamos ID y Rol
+  const [isLoading, setIsLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  
-  // --- LÓGICA DE ENVÍO A API ---
-  const handleFinalize = async () => {
-    setLoading(true);
+  // Estados de Navegación Auth
+  const [isLoginView, setIsLoginView] = useState(true);
+  const [step, setStep] = useState(1);
+
+  // Campos del Formulario
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [nombre, setNombre] = useState('');
+  const [apellidos, setApellidos] = useState('');
+  const [usuario, setUsuario] = useState('');
+
+  // Auto-Login al iniciar
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const checkLoginStatus = async () => {
+    try {
+      const token = await getValue('userToken');
+      const idPersona = await getValue('userId');
+      
+      if (token && idPersona) {
+        setUserToken(token);
+        setUserInfo({ id: idPersona }); 
+      }
+    } catch (e) {
+      console.log("Error recuperando sesión", e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // --- HANDLERS ---
+
+  const handleLogin = async () => {
+    if (!email || !password) return alertOrLog("Error", "Ingresa correo y contraseña");
+    
+    setIsProcessing(true);
+    try {
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo: email, contrasena_plana: password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        await save('userToken', data.token);
+        await save('userId', String(data.id_persona));
+        
+        setUserToken(data.token);
+        setUserInfo({ id: data.id_persona });
+        // No mostramos alerta aquí para entrar directo al Home
+      } else {
+        alertOrLog("Error de Acceso", data.error || "Credenciales incorrectas");
+      }
+    } catch (error) {
+      console.error(error);
+      alertOrLog("Error de Conexión", "Verifique que el servidor (Flask) esté corriendo.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    if(!nombre || !apellidos || !email || !usuario || !password) {
+        return alertOrLog("Faltan datos", "Completa todos los pasos.");
+    }
+
+    setIsProcessing(true);
     
     const payload = {
-      fullName: nombre,
-      username: usuario,
-      institution: institucion || "Ninguna",
+      nombre, apellidos, correo: email, 
+      contrasena_plana: password, nombre_usuario: usuario, id_rol: 2 
     };
 
     try {
-      // Reemplaza con tu IP local (ej: http://192.168.1.50:3000) si pruebas en local
-      const response = await fetch('https://tu-api.com/registro', {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -45,293 +143,153 @@ export default function App() {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert("¡Éxito!", "Tu cuenta ha sido creada correctamente.");
-        // Aquí podrías resetear el formulario o navegar a Home
+        alertOrLog("¡Cuenta Creada!", "Ahora inicia sesión con tus credenciales.");
+        setIsLoginView(true);
+        setStep(1);
+        setPassword('');
       } else {
-        Alert.alert("Error", data.message || "Algo salió mal en el servidor.");
+        alertOrLog("Error", data.error || "No se pudo crear el usuario");
       }
     } catch (error) {
-      Alert.alert("Error de Conexión", "No se pudo conectar con el servidor.");
+      alertOrLog("Error", "No se pudo conectar con el servidor.");
     } finally {
-      setLoading(false);
+      setIsProcessing(false);
     }
   };
 
-  // --- NAVEGACIÓN ENTRE PASOS ---
-  const nextStep = () => {
-    if (step < 3) setStep(step + 1);
+  const handleLogout = async () => {
+    await deleteValue('userToken');
+    await deleteValue('userId');
+    setUserToken(null);
+    setUserInfo(null);
   };
 
-  const prevStep = () => {
-    if (step > 1) setStep(step - 1);
+  const alertOrLog = (title, msg) => {
+    if (Platform.OS === 'web') alert(`${title}: ${msg}`);
+    else Alert.alert(title, msg);
   };
 
-  // Validación para habilitar botón
-  const isNextDisabled = (step === 1 && !nombre) || (step === 2 && !usuario);
+  // --- RENDERIZADO ---
 
+  if (isLoading) {
+    return (
+      <View style={[styles.container, {justifyContent: 'center', alignItems: 'center'}]}>
+        <ActivityIndicator size="large" color="#00CFFF" />
+      </View>
+    );
+  }
+
+  // 1. SI HAY TOKEN -> MUESTRA LA PANTALLA DE INICIO (HomeScreen)
+  if (userToken) {
+    return (
+      <HomeScreen 
+        token={userToken} 
+        onLogout={handleLogout}
+        apiUrl={API_URL}
+      />
+    );
+  }
+
+  // 2. SI NO HAY TOKEN -> MUESTRA LOGIN / REGISTRO
   return (
-    <View style={styles.background}>
-      <StatusBar style="light" />
-      
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
-        <ScrollView 
-          contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* LOGO Y BIENVENIDA */}
-          <View style={styles.logoContainer}>
-             <View style={styles.iconBox}>
-                <Text style={styles.iconSymbol}>{'>_'}</Text>
-             </View>
-             <Text style={styles.logoText}>{'CODIUM'}</Text>
-             <Text style={styles.welcomeTitle}>¡Hola! Comencemos.</Text>
-             <Text style={styles.welcomeSubtitle}>Crea tu cuenta en pocos pasos.</Text>
-          </View>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        
+        <View style={styles.header}>
+          <Text style={styles.title}>{isLoginView ? 'Bienvenido' : 'Crear Cuenta'}</Text>
+          <Text style={styles.subtitle}>
+            {isLoginView ? 'Inicia sesión para continuar' : 'Únete a la comunidad'}
+          </Text>
+        </View>
 
-          {/* CARD EFECTO GLASS */}
-          <View style={styles.glassCard}>
-            
-            {/* CONTENIDO DINÁMICO POR PASOS */}
-            {step === 1 && (
-              <View>
-                <Text style={styles.stepIndicator}>PASO 1 DE 3</Text>
-                <Text style={styles.label}>¿Cómo te llamas?</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Nombre y Apellido"
-                  placeholderTextColor="#64748B"
-                  value={nombre}
-                  onChangeText={setNombre}
-                  autoFocus
-                />
-              </View>
-            )}
-
-            {step === 2 && (
-              <View>
-                <Text style={styles.stepIndicator}>PASO 2 DE 3</Text>
-                <Text style={styles.label}>Elige un nombre de usuario</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ej: juan_dev"
-                  placeholderTextColor="#64748B"
-                  autoCapitalize="none"
-                  value={usuario}
-                  onChangeText={setUsuario}
-                  autoFocus
-                />
-              </View>
-            )}
-
-            {step === 3 && (
-              <View>
-                <Text style={styles.stepIndicator}>PASO 3 DE 3</Text>
-                <Text style={styles.label}>¿A qué institución perteneces?</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Opcional"
-                  placeholderTextColor="#64748B"
-                  value={institucion}
-                  onChangeText={setInstitucion}
-                  autoFocus
-                />
-              </View>
-            )}
-
-            {/* BOTÓN DE ACCIÓN */}
-            <TouchableOpacity 
-              style={[styles.mainButton, isNextDisabled && styles.buttonDisabled]} 
-              onPress={step === 3 ? handleFinalize : nextStep}
-              disabled={isNextDisabled || loading}
-            >
-              {loading ? (
-                <ActivityIndicator color="#0F172A" />
-              ) : (
-                <Text style={styles.buttonText}>{step === 3 ? 'Finalizar' : 'Siguiente'}</Text>
-              )}
-            </TouchableOpacity>
-
-            {/* BOTÓN VOLVER */}
-            {step > 1 && (
-              <TouchableOpacity onPress={prevStep} style={styles.backButton}>
-                <Text style={styles.backText}>Regresar al paso anterior</Text>
+        <View style={styles.formCard}>
+          {isLoginView ? (
+            // FORM LOGIN
+            <>
+              <TextInput 
+                style={styles.input} placeholder="Correo electrónico" 
+                placeholderTextColor="#64748B" keyboardType="email-address" autoCapitalize="none"
+                value={email} onChangeText={setEmail}
+              />
+              <TextInput 
+                style={styles.input} placeholder="Contraseña" 
+                placeholderTextColor="#64748B" secureTextEntry
+                value={password} onChangeText={setPassword}
+              />
+              <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isProcessing}>
+                {isProcessing ? <ActivityIndicator color="#0F172A" /> : <Text style={styles.buttonText}>Ingresar</Text>}
               </TouchableOpacity>
-            )}
-          </View>
+            </>
+          ) : (
+            // FORM REGISTRO (PASOS)
+            <>
+              <Text style={styles.stepText}>PASO {step} DE 3</Text>
+              
+              {step === 1 && (
+                <>
+                  <TextInput style={styles.input} placeholder="Nombre" placeholderTextColor="#64748B" value={nombre} onChangeText={setNombre} />
+                  <TextInput style={styles.input} placeholder="Apellidos" placeholderTextColor="#64748B" value={apellidos} onChangeText={setApellidos} />
+                  <TouchableOpacity style={styles.button} onPress={() => setStep(2)}><Text style={styles.buttonText}>Siguiente</Text></TouchableOpacity>
+                </>
+              )}
 
-          {/* FOOTER: YA TIENE CUENTA */}
-          <View style={styles.footerSection}>
-            <View style={styles.dividerContainer}>
-               <View style={styles.line} />
-               <Text style={styles.dividerText}>¿YA TIENES CUENTA?</Text>
-               <View style={styles.line} />
-            </View>
+              {step === 2 && (
+                <>
+                  <TextInput style={styles.input} placeholder="Correo electrónico" placeholderTextColor="#64748B" keyboardType="email-address" autoCapitalize="none" value={email} onChangeText={setEmail} />
+                  <TextInput style={styles.input} placeholder="Usuario (Nick)" placeholderTextColor="#64748B" autoCapitalize="none" value={usuario} onChangeText={setUsuario} />
+                  <View style={styles.rowButtons}>
+                    <TouchableOpacity style={styles.secondaryButton} onPress={() => setStep(1)}><Text style={styles.secondaryButtonText}>Atrás</Text></TouchableOpacity>
+                    <TouchableOpacity style={[styles.button, {flex:1, marginTop:0}]} onPress={() => setStep(3)}><Text style={styles.buttonText}>Siguiente</Text></TouchableOpacity>
+                  </View>
+                </>
+              )}
 
-            <TouchableOpacity style={styles.secondaryButton}>
-              <Text style={styles.secondaryButtonText}>Iniciar Sesión Directamente</Text>
-            </TouchableOpacity>
+              {step === 3 && (
+                <>
+                  <TextInput style={styles.input} placeholder="Crea tu contraseña" placeholderTextColor="#64748B" secureTextEntry value={password} onChangeText={setPassword} />
+                  <View style={styles.rowButtons}>
+                    <TouchableOpacity style={styles.secondaryButton} onPress={() => setStep(2)}><Text style={styles.secondaryButtonText}>Atrás</Text></TouchableOpacity>
+                    <TouchableOpacity style={[styles.button, {flex:1, marginTop:0}]} onPress={handleRegister} disabled={isProcessing}>
+                      {isProcessing ? <ActivityIndicator color="#0F172A" /> : <Text style={styles.buttonText}>Confirmar</Text>}
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
+            </>
+          )}
+        </View>
 
-            <TouchableOpacity style={styles.googleButton}>
-               <Text style={styles.googleButtonText}>Acceder con Google</Text>
-            </TouchableOpacity>
-          </View>
+        <TouchableOpacity 
+          style={styles.toggleContainer} 
+          onPress={() => { setIsLoginView(!isLoginView); setStep(1); }}
+        >
+          <Text style={styles.toggleText}>
+            {isLoginView ? '¿No tienes cuenta? ' : '¿Ya tienes cuenta? '}
+            <Text style={styles.toggleLink}>{isLoginView ? 'Regístrate' : 'Inicia Sesión'}</Text>
+          </Text>
+        </TouchableOpacity>
 
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
-// --- ESTILOS ---
+// ESTILOS
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    backgroundColor: '#0F172A',
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 25,
-    paddingVertical: 60,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  iconBox: {
-    width: 70,
-    height: 70,
-    backgroundColor: '#162033',
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#1E293B',
-    marginBottom: 15,
-  },
-  iconSymbol: {
-    color: '#00CFFF',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  logoText: {
-    color: '#00CFFF',
-    fontWeight: '900',
-    letterSpacing: 5,
-    fontSize: 14,
-    marginBottom: 15,
-  },
-  welcomeTitle: {
-    fontSize: 28,
-    color: '#FFF',
-    fontWeight: 'bold',
-  },
-  welcomeSubtitle: {
-    fontSize: 15,
-    color: '#94A3B8',
-    marginTop: 5,
-  },
-  glassCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    borderRadius: 30,
-    padding: 30,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    minHeight: 250,
-  },
-  stepIndicator: {
-    color: '#00CFFF',
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 1.5,
-    marginBottom: 10,
-  },
-  label: {
-    color: '#FFF',
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#1E293B',
-    height: 60,
-    borderRadius: 16,
-    paddingHorizontal: 20,
-    color: '#FFF',
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#334155',
-  },
-  mainButton: {
-    backgroundColor: '#00CFFF',
-    height: 60,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 25,
-  },
-  buttonDisabled: {
-    backgroundColor: '#1E293B',
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#0F172A',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  backButton: {
-    marginTop: 20,
-    alignSelf: 'center',
-  },
-  backText: {
-    color: '#94A3B8',
-    textDecorationLine: 'underline',
-    fontSize: 14,
-  },
-  footerSection: {
-    marginTop: 50,
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 25,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#1E293B',
-  },
-  dividerText: {
-    color: '#475569',
-    fontSize: 10,
-    marginHorizontal: 15,
-    fontWeight: 'bold',
-  },
-  secondaryButton: {
-    height: 55,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#00CFFF',
-    marginBottom: 12,
-  },
-  secondaryButtonText: {
-    color: '#00CFFF',
-    fontWeight: 'bold',
-  },
-  googleButton: {
-    backgroundColor: '#1E293B',
-    height: 55,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  googleButtonText: {
-    color: '#FFF',
-    fontWeight: '600',
-  }
+  container: { flex: 1, backgroundColor: '#0F172A' },
+  scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 24 },
+  header: { marginBottom: 40, alignItems: 'center' },
+  title: { fontSize: 32, fontWeight: 'bold', color: '#F8FAFC', marginBottom: 8 },
+  subtitle: { fontSize: 16, color: '#94A3B8' },
+  formCard: { backgroundColor: '#1E293B', borderRadius: 24, padding: 24, borderWidth: 1, borderColor: '#334155', elevation: 5 },
+  input: { backgroundColor: '#0F172A', height: 56, borderRadius: 12, paddingHorizontal: 16, color: '#F8FAFC', fontSize: 16, borderWidth: 1, borderColor: '#334155', marginBottom: 16 },
+  button: { backgroundColor: '#00CFFF', height: 56, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginTop: 8 },
+  buttonText: { color: '#0F172A', fontSize: 16, fontWeight: 'bold' },
+  stepText: { color: '#00CFFF', fontSize: 14, fontWeight: 'bold', marginBottom: 16, textAlign: 'center', letterSpacing: 1 },
+  rowButtons: { flexDirection: 'row', gap: 12, marginTop: 8 },
+  secondaryButton: { height: 56, paddingHorizontal: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#475569', borderRadius: 12 },
+  secondaryButtonText: { color: '#94A3B8', fontWeight: '600' },
+  toggleContainer: { marginTop: 32, alignItems: 'center' },
+  toggleText: { color: '#94A3B8', fontSize: 15 },
+  toggleLink: { color: '#00CFFF', fontWeight: 'bold' }
 });
