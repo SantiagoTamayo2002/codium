@@ -1,0 +1,116 @@
+---
+title: "Frontend del Proyecto"
+author: "Wilmer Pardo, Santiago Tamayo, Eberson Guayllas"
+format: pdf
+editor: visual
+---
+
+# Arquitectura del Frontend
+
+El cliente web de Codium es una *Single Page Application* (SPA) desarrollada con **React 18** y construida mediante **Vite** para garantizar un alto rendimiento y tiempos de carga rápidos. La interfaz consume la API REST documentada en el capítulo anterior para ofrecer una experiencia dinámica e interactiva.
+
+## Stack Tecnológico
+
+El ecosistema del frontend se basa en las siguientes librerías clave:
+
+* **Core:** React, Vite (Build tool).
+* **Enrutamiento:** `react-router-dom` (Gestión de rutas y navegación).
+* **Visualización de Datos:** `recharts` (Gráficos estadísticos en Dashboard y Perfil).
+* **Comunicación HTTP:** `axios` (Cliente HTTP para consumir el Backend).
+* **Iconografía:** `react-icons` y `Google Material Symbols`.
+* **Estilos:** CSS3 nativo modularizado por componentes.
+
+## Estructura del Proyecto
+
+La organización de archivos sigue un patrón modular, separando la lógica de las vistas y los servicios:
+
+```text
+src/
+├── components/          # Elementos reutilizables (Sidebar, AccessibilityButton)
+├── css/                 # Hojas de estilo específicas por página
+├── context/             # Estados globales (AuthContext)
+├── pages/               # Vistas principales de la aplicación
+│   ├── AdminPanel.jsx   # Gestión de usuarios
+│   ├── Dashboard.jsx    # Resumen de estadísticas
+│   ├── LandingPage.jsx  # Página de aterrizaje pública
+│   ├── RetoActivo.jsx   # Editor de código y resolución
+│   └── ... (Profile, Notifications, etc.)
+├── services/            # Configuración de Axios (api.js)
+├── App.jsx              # Enrutador principal
+└── main.jsx             # Punto de entrada
+```
+
+
+## Navegación y Rutas (App.jsx)
+
+La navegación se gestiona centralizadamente en App.jsx. El sistema implementa un componente de Rutas Protegidas (ProtectedRoute), el cual verifica la existencia de una sesión activa antes de renderizar los componentes privados.
+
+## Mapa de Navegación (Sitemap)
+
+El siguiente diagrama ilustra el flujo de navegación del usuario a través de la aplicación:
+
+```{mermaid}
+graph TD
+    User((Usuario)) --> Landing[Landing Page /]
+    User --> Login[Login / Register]
+    
+    subgraph "Área Privada (Requiere Token)"
+        Dash[Dashboard]
+        Profile[Perfil de Usuario]
+        EditProfile[Editar Perfil]
+        RetosList[Lista de Retos]
+        RetoView[Reto Activo (Editor)]
+        Social[Publicaciones / Feed]
+        Notif[Notificaciones]
+        Admin[Admin Panel]
+    end
+    
+    Login -->|Auth Exitoso| Dash
+    Dash --> RetosList
+    RetosList -->|Selecciona| RetoView
+    Dash --> Profile
+    Profile --> EditProfile
+    Dash --> Social
+    Dash --> Notif
+```
+
+Módulos Principales
+1. Sistema de Resolución de Retos (RetoActivo.jsx)
+Este es el componente central de la plataforma. Funciona como un pequeño IDE en el navegador.
+
+Lógica de Estado: Utiliza useState para gestionar el código escrito por el usuario, el lenguaje seleccionado (cargado dinámicamente desde el backend) y la pestaña activa (Enunciado vs. Envíos).
+
+Ejecución de Código: Al hacer clic en "Enviar Solución", el componente envía el código fuente al endpoint /api/retos/:id/submit.
+
+Historial: Muestra una tabla con los envíos previos, indicando si fueron "Aprobados" o "Fallidos" y el tiempo de ejecución en milisegundos.
+
+2. Panel de Control y Métricas (Dashboard.jsx y ProfilePage.jsx)
+Estas vistas transforman los datos crudos del usuario en información visual valiosa utilizando la librería Recharts.
+
+Gráfico de Barras (BarChart): Visualiza el progreso acumulado de puntos.
+
+Gráfico Circular (PieChart): Muestra la proporción de retos resueltos frente a los pendientes.
+
+Carga de Datos: Se utilizan efectos (useEffect) para obtener los datos del perfil (/api/profile) al montar el componente, manejando estados de carga (loading) y error.
+
+3. Módulo Social (Publicaciones.jsx)
+Implementa un feed de noticias que fomenta la interacción entre usuarios.
+
+CRUD de Posts: Permite crear nuevas publicaciones y listarlas paginadas.
+
+Reacciones: Integra botones interactivos (Me gusta, Me encanta, Me divierte) utilizando react-icons. La actualización de la interfaz es inmediata tras la interacción del usuario.
+
+4. Panel de Administración (AdminPanel.jsx)
+Una vista reservada para roles privilegiados que permite la gestión de usuarios.
+
+Funcionalidad: Lista a los usuarios registrados en una tabla y permite acciones como buscar por nombre o eliminar cuentas.
+
+Integración con el Backend
+La comunicación con la API se realiza a través de una instancia configurada de Axios (ubicada en services/api.js).
+
+Interceptors: Se configura un interceptor para inyectar automáticamente el token JWT (Bearer Token) en la cabecera Authorization de todas las peticiones salientes, garantizando que el usuario esté autenticado sin repetir código en cada componente.
+
+Manejo de Errores: Los componentes implementan bloques try-catch o .catch() para gestionar errores de red (401, 404, 500) y mostrar feedback al usuario.
+
+Accesibilidad (A11y)
+El proyecto incluye un componente global AccessibilityButton (visible en App.jsx), asegurando que las herramientas de accesibilidad estén disponibles en cualquier ruta de la aplicación, cumpliendo con principios de diseño inclusivo.

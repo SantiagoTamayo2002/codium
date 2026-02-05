@@ -1,0 +1,36 @@
+---
+title: "Documentación del Proyecto Codium"
+author: "Wilmer Pardo, Santiago Tamayo, Eberson Guayllas"
+format: pdf
+editor: visual
+---
+
+# Bienvenido a Codium
+
+**Codium** es una plataforma multiplataforma de retos de programación diseñada para fomentar el aprendizaje y la competencia entre desarrolladores. El sistema permite a los usuarios resolver problemas algorítmicos, competir en un ranking global e interactuar socialmente con otros programadores.
+
+## Visión del Proyecto
+
+El objetivo principal es crear un ecosistema seguro, escalable y moderno donde los estudiantes y profesionales puedan:
+
+1.  **Practicar:** Resolver retos de código en múltiples lenguajes de programación.
+2.  **Competir:** Subir en la clasificación global mediante un sistema de puntajes.
+3.  **Socializar:** Compartir logros y soluciones a través de un feed de publicaciones.
+
+## Estructura del Sistema
+
+La solución tecnológica se compone de tres pilares fundamentales:
+
+* **Backend (API REST):** Desarrollado en Python con Flask. Maneja la lógica de negocio, la seguridad y el acceso a datos.
+* **Frontend Web:** Interfaz de usuario para navegadores de escritorio.
+* **Aplicación Móvil:** Experiencia nativa para dispositivos móviles.
+
+## Roles de Usuario
+
+El sistema contempla los siguientes actores:
+
+* **Usuario (Programador):** Puede resolver retos, publicar en el feed y ver su progreso.
+* **Administrador:** Gestiona usuarios, retos y modera contenido.
+* **Sistema (Juez):** Agente automático encargado de evaluar el código enviado y asignar puntajes.
+
+En los siguientes capítulos se detalla la implementación técnica de cada componente.

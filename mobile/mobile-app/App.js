@@ -22,9 +22,9 @@ import HomeScreen from './HomeScreen';
 // ⚠️ IMPORTANTE: Ajusta esta IP a la de tu computadora (ipconfig/ifconfig)
 const API_URL = Platform.OS === 'web' 
   ? 'http://localhost:5000/api' 
-  : 'http://192.168.1.114:5000/api'; // <--- VERIFICA ESTA IP
+  : 'http://10.20.139.145:5000/api';
 
-// --- FUNCIONES AUXILIARES DE ALMACENAMIENTO (WEB vs MOVIL) ---
+
 async function save(key, value) {
   if (Platform.OS === 'web') {
     try { localStorage.setItem(key, value); } catch (e) { console.error(e); }

@@ -1,0 +1,80 @@
+# Desarrollo de la Aplicación Móvil
+
+La versión móvil de Codium está desarrollada utilizando **React Native** con el framework **Expo**. Esta arquitectura permite un desarrollo ágil y multiplataforma (Android/iOS) compartiendo la misma lógica de negocio que la versión web, pero adaptada a interfaces táctiles nativas.
+
+## 1. Estructura del Proyecto
+
+La aplicación sigue una estructura basada en pantallas (`Screens`) y componentes funcionales. A continuación se describe la organización de los archivos principales:
+
+| Archivo | Tipo | Descripción y Responsabilidad |
+| :--- | :--- | :--- |
+| **`App.js`** | Entry Point | Gestiona la autenticación global (Login/Registro), almacenamiento de tokens (`SecureStore`) y el enrutamiento principal. |
+| **`HomeScreen.js`** | Pantalla | Dashboard principal. Contiene el **Mapa de Calor** de actividad y accesos directos al Ranking y Retos. |
+| **`MainTabScreen.js`** | Navegación | Implementación de una barra de navegación inferior personalizada para alternar entre el Muro Social y los Retos. |
+| **`FeedScreen.js`** | Pantalla | Muro social. Permite ver publicaciones, crear nuevos posts, comentar y recargar la lista (`RefreshControl`). |
+| **`RetosScreen.js`** | Pantalla | Listado de retos de programación. Incluye modales para ver detalles, dificultad y lenguajes permitidos. |
+| **`RankingScreen.js`** | Pantalla | Tabla de clasificación global con estilos condicionales para el Top 3 (Oro, Plata, Bronce). |
+| **`app.json`** | Configuración | Metadatos de Expo: nombre de la app, versión, iconos adaptativos y permisos. |
+
+: Estructura de archivos del proyecto móvil
+
+## 2. Stack Tecnológico Móvil
+
+El ecosistema móvil se apoya en las siguientes librerías clave definidas en `package.json`:
+
+| Librería | Versión | Uso en el Proyecto |
+| :--- | :--- | :--- |
+| **Expo SDK** | ~54.0.33 | Entorno de ejecución y acceso a APIs nativas. |
+| **React Native** | 0.81.5 | Renderizado de componentes nativos. |
+| **Expo Secure Store** | ~15.0.8 | Almacenamiento encriptado del Token JWT y sesión del usuario. |
+| **React Native Web** | ^0.21.0 | Compatibilidad para ejecutar la app en navegadores. |
+
+: Dependencias principales (Mobile)
+
+## 3. Arquitectura de Navegación y Flujo
+
+A diferencia de la navegación web tradicional, la app móvil gestiona su estado de navegación mediante renderizado condicional en `App.js` y `MainTabScreen.js`.
+
+### Diagrama de Flujo de Pantallas
+
+```{mermaid}
+graph TD
+    A[Inicio de App] --> B{¿Tiene Token?}
+    B -- No --> C[Login / Registro]
+    B -- Si --> D[HomeScreen]
+    
+    subgraph "Navegación Autenticada"
+        D --> E[RankingScreen]
+        D --> F[MainTabScreen]
+        
+        F --> G[Feed Tab]
+        F --> H[Retos Tab]
+    end
+    
+    C -->|Autenticación Exitosa| D
+```
+
+4. Detalle de Componentes Clave
+4.1. Visualización de Actividad (Heatmap)
+En HomeScreen.js, se implementa un algoritmo visual para simular un mapa de contribuciones similar al de GitHub.
+
+Lógica: Genera dinámicamente los últimos 30 días.
+
+Estilos: Asigna colores desde azul oscuro (#1E293B) hasta cian brillante (#00CFFF) dependiendo de la intensidad de la actividad del usuario.
+
+4.2. Sistema de Autenticación Híbrido
+El archivo App.js detecta automáticamente la plataforma para configurar la URL de la API:
+
+Web: Usa localhost.
+
+Móvil (Físico/Emulador): Se configura para apuntar a la IP de la red local (ej. 10.20.139.145) para permitir la conexión con el backend Flask durante el desarrollo.
+
+Persistencia: Utiliza SecureStore en móvil y localStorage en web para guardar el token de sesión.
+
+4.3. Gestión de Feed y Retos
+FeedScreen: Implementa FlatList optimizado con RefreshControl para "jalar y refrescar" las noticias. Incluye modales nativos para la creación de contenido.
+
+RetosScreen: Consume la API de retos y presenta la dificultad mediante etiquetas de color (Fácil: Verde, Medio: Amarillo, Difícil: Rojo).
+
+5. Configuración de Expo (app.json)
+El proyecto está configurado para soportar "New Architecture" de React Native y define la orientación de la pantalla como portrait (vertical) para asegurar una experiencia de usuario consistente.

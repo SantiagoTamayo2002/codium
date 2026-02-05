@@ -1,0 +1,21 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Documentación Técnica Total"
+  subtitle: "Proyecto de Software Integrado"
+  author: "Wilmer Pardo, Santiago Tamayo, Eberson Guayllas"
+  date: last-modified
+  chapters:
+    - index.qmd        # Introducción general
+    - arquitectura.qmd # Visión global
+    - backend.qmd      # Lógica y datos
+    - frontend.qmd     # Interfaz Web
+    - mobile.qmd       # Interfaz Móvil
+
+format:
+  pdf:
+    documentclass: scrreprt
+    number-sections: true
+    toc: true

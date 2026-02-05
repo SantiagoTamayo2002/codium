@@ -1,7 +1,4 @@
-'''
-Credenciales que nos permiten la autenticación con Google OAuth
-estas las vamos a cambiar cuando la despleguemos en producción
-'''
+
 
 class Config:
     SECRET_KEY = "clave-super-secreta"

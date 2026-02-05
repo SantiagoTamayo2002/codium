@@ -1,0 +1,136 @@
+---
+title: "Backend del Proyecto"
+author: "Wilmer Pardo, Santiago Tamayo, Eberson Guayllas"
+format: pdf
+editor: visual
+---
+
+# Arquitectura del Backend
+
+El backend de Codium es una API RESTful construida sobre **Flask 3.1**, diseñada bajo una arquitectura modular que separa las responsabilidades en capas de Servicios (Controladores) y Modelos de Datos.
+
+## Tecnologías Clave
+
+* **Lenguaje:** Python 3.8+
+* **Framework:** Flask (con Blueprints para modularidad).
+* **Base de Datos:** MySQL.
+* **Seguridad:** JWT (JSON Web Tokens) para autenticación y `Werkzeug` para hashing.
+* **ORM/Driver:** `mysql-connector-python` (Uso de SQL nativo para optimización).
+
+## Estructura del Código (`src`)
+
+El código fuente se organiza por dominios funcionales:
+
+```text
+src/
+├── database/            # Conexión a BD (db.py)
+├── models/              # Lógica de acceso a datos (DAO)
+│   ├── interaccionSocialModels/  # Publicaciones y comentarios
+│   ├── personaModels/            # Usuarios y Autenticación
+│   └── retosModels/              # Lógica de retos y juez
+└── routes/                       # Controladores (Blueprints)
+
+```
+
+## Modelo de Datos (ERD)
+A continuación se presenta el diagrama de las entidades principales inferido del código fuente.
+```{mermaid}
+erDiagram
+    %% Entidades Principales
+    PERSONA {
+        int id_persona PK
+        string nombre
+        string apellidos
+        string correo
+        string nombre_usuario
+        string contrasena_hash
+        int id_rol FK
+        int puntaje_total
+    }
+
+    RETO {
+        int id_reto PK
+        string titulo
+        string descripcion
+        date fecha_creacion
+        int id_dificultad FK
+    }
+
+    RESPUESTA {
+        int id_respuesta PK
+        text codigo_fuente
+        float puntaje
+        int tiempo_ejecucion_ms
+        datetime fecha
+        int id_estado FK
+        int id_lenguaje FK
+    }
+
+    %% Interacción Social
+    PUBLICACION {
+        int id_publicacion PK
+        text contenido
+        datetime fecha
+        int id_persona FK
+    }
+
+    COMENTARIO {
+        int id_comentario PK
+        text contenido
+        datetime fecha
+        int id_publicacion FK
+        int id_persona FK
+    }
+
+    %% Tablas Auxiliares y de Configuración
+    CASO_PRUEBA {
+        int id_caso PK
+        text entrada
+        text salida_esperada
+        boolean es_publico
+        int id_reto FK
+    }
+
+    LENGUAJE {
+        int id_lenguaje PK
+        string nombre_lenguaje
+        string version
+    }
+
+    DIFICULTAD {
+        int id_dificultad PK
+        string nombre_dificultad
+        int puntaje_base
+    }
+
+    ESTADO_RESPUESTA {
+        int id_estado PK
+        string nombre_estado
+    }
+
+    %% Relaciones
+    PERSONA ||--o{ RESPUESTA : "envía"
+    PERSONA ||--o{ PUBLICACION : "publica"
+    PERSONA ||--o{ COMENTARIO : "escribe"
+    
+    RETO ||--o{ RESPUESTA : "recibe"
+    RETO ||--o{ CASO_PRUEBA : "tiene"
+    RETO }|--|| DIFICULTAD : "clasificado_como"
+    
+    RESPUESTA }|--|| ESTADO_RESPUESTA : "tiene"
+    RESPUESTA }|--|| LENGUAJE : "escrito_en"
+
+    PUBLICACION ||--o{ COMENTARIO : "recibe"
+```
+
+## Rutas Principales (Blueprints)
+
+El backend expone las siguientes rutas principales, organizadas en Blueprints:
+| Recurso | Ruta Base | Descripción |
+| :--- | :--- | :--- |
+| **Auth** | `/api/auth` | Login, Registro, OAuth Google. |
+| **Usuarios** | `/api` | Perfil de usuario, Ranking, Cambio de contraseña. |
+| **Retos** | `/api/retos` | Listado de retos, Envío de soluciones (`/submit`). |
+| **Social** | `/api/publicaciones` | Feed de noticias, Comentarios. |
+
+
